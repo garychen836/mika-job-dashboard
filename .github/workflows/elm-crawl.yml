@@ -1,0 +1,45 @@
+# Mika Job Dashboard: the daily crawl runs here, not in the web server, then uploads the result.
+# Reads every board in the committed elm/data/seeds.json (elm/crawl.py) and Yale's public career events (elm/events.py), and
+# POSTs roles + events + the crawl summary to $ELM_URL/api/admin/upload (elm/upload.py). Zero model tokens.
+# Secrets (repository settings): ELM_URL (https://<service>.onrender.com) and ELM_UPLOAD_SECRET (the same value as the service's
+# env ELM_UPLOAD_SECRET). Without them the crawl still runs and the upload is skipped.
+name: Elm crawl
+on:
+  schedule:
+    - cron: "0 10 * * *"
+  workflow_dispatch:
+jobs:
+  crawl:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      ELM_URL: ${{ secrets.ELM_URL }}
+      ELM_UPLOAD_SECRET: ${{ secrets.ELM_UPLOAD_SECRET }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: pip install -r requirements.txt
+      - name: Wake the service (a free instance sleeps)
+        if: env.ELM_URL != ''
+        run: curl -fsS --max-time 120 "$ELM_URL/healthz" || true
+      # The board list (elm/data/seeds.json) is committed and rebuilt by hand (elm/seeds.py), not every day.
+      - run: python elm/crawl.py
+      - run: python elm/events.py
+      - name: Upload
+        if: env.ELM_URL != '' && env.ELM_UPLOAD_SECRET != ''
+        run: |
+          python - <<'PY'
+          import json, pathlib
+          d = pathlib.Path("elm/data")
+          body = {"roles": json.loads((d / "roles.json").read_text()), "crawl": json.loads((d / "_crawl.json").read_text())}
+          if (d / "events.json").exists():
+              body["events"] = json.loads((d / "events.json").read_text())
+          pathlib.Path("/tmp/elm_upload.json").write_text(json.dumps(body))
+          PY
+          curl -fsS --max-time 300 -X POST "$ELM_URL/api/admin/upload" -H "Content-Type: application/json" \
+            -H "X-Elm-Upload: $ELM_UPLOAD_SECRET" --data-binary @/tmp/elm_upload.json
+      - name: Skipped upload
+        if: env.ELM_URL == '' || env.ELM_UPLOAD_SECRET == ''
+        run: echo "ELM_URL or ELM_UPLOAD_SECRET is not set - crawl done, upload skipped."

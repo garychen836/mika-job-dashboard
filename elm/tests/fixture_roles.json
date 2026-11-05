@@ -1,0 +1,200 @@
+{
+ "built": "2026-11-04T00:00:00Z",
+ "roles": [
+  {
+   "id": "x1",
+   "company": "Example Co",
+   "title": "Software Engineer Intern",
+   "location": "New York, NY",
+   "us": true,
+   "kind": "intern",
+   "flags": [],
+   "ats": "example",
+   "url": "https://example.com/jobs/1",
+   "posted": "2026-10-30",
+   "seen": "2026-11-04",
+   "sponsor": {
+    "lca_recent": 40,
+    "lca_total": 120,
+    "last_fy": 2026,
+    "source": "DOL"
+   },
+   "sponsor_text": null,
+   "tier": null
+  },
+  {
+   "id": "x2",
+   "company": "Example Co",
+   "title": "Junior Data Analyst",
+   "location": "Remote, US",
+   "us": true,
+   "kind": "entry",
+   "flags": [],
+   "ats": "example",
+   "url": "https://example.com/jobs/2",
+   "posted": "2026-10-30",
+   "seen": "2026-11-04",
+   "sponsor": {
+    "lca_recent": 40,
+    "lca_total": 120,
+    "last_fy": 2026,
+    "source": "DOL"
+   },
+   "sponsor_text": {
+    "verdict": "likely",
+    "quote": "We sponsor work visas for qualified candidates."
+   },
+   "tier": null
+  },
+  {
+   "id": "x3",
+   "company": "Sample Labs",
+   "title": "Research Associate",
+   "location": "Boston, MA",
+   "us": true,
+   "kind": "entry",
+   "flags": [],
+   "ats": "example",
+   "url": "https://example.com/jobs/3",
+   "posted": "2026-10-30",
+   "seen": "2026-11-04",
+   "sponsor": null,
+   "sponsor_text": null,
+   "tier": "startup"
+  },
+  {
+   "id": "x4",
+   "company": "Sample Labs",
+   "title": "Marketing Intern",
+   "location": "Boston, MA",
+   "us": true,
+   "kind": "intern",
+   "flags": [],
+   "ats": "example",
+   "url": "https://example.com/jobs/4",
+   "posted": "2026-10-30",
+   "seen": "2026-11-04",
+   "sponsor": null,
+   "sponsor_text": null,
+   "tier": "startup"
+  },
+  {
+   "id": "x5",
+   "company": "Demo Inc",
+   "title": "MBA Summer Associate",
+   "location": "Chicago, IL",
+   "us": true,
+   "kind": "intern",
+   "flags": [
+    "mba_only"
+   ],
+   "ats": "example",
+   "url": "https://example.com/jobs/5",
+   "posted": "2026-10-30",
+   "seen": "2026-11-04",
+   "sponsor": {
+    "lca_recent": 5,
+    "lca_total": 15,
+    "last_fy": 2026,
+    "source": "DOL"
+   },
+   "sponsor_text": null,
+   "tier": null
+  },
+  {
+   "id": "x6",
+   "company": "Demo Inc",
+   "title": "Analyst I",
+   "location": "London, UK",
+   "us": false,
+   "kind": "entry",
+   "flags": [],
+   "ats": "example",
+   "url": "https://example.com/jobs/6",
+   "posted": "2026-10-30",
+   "seen": "2026-11-04",
+   "sponsor": null,
+   "sponsor_text": null,
+   "tier": null
+  },
+  {
+   "id": "x7",
+   "company": "Placeholder Ltd",
+   "title": "Product Design Intern",
+   "location": "San Francisco, CA",
+   "us": true,
+   "kind": "intern",
+   "flags": [],
+   "ats": "example",
+   "url": "https://example.com/jobs/7",
+   "posted": "2026-10-30",
+   "seen": "2026-11-04",
+   "sponsor": {
+    "lca_recent": 2,
+    "lca_total": 6,
+    "last_fy": 2026,
+    "source": "DOL"
+   },
+   "sponsor_text": null,
+   "tier": "startup"
+  },
+  {
+   "id": "x8",
+   "company": "Placeholder Ltd",
+   "title": "Associate Engineer",
+   "location": "Austin, TX",
+   "us": true,
+   "kind": "entry",
+   "flags": [
+    "hourly"
+   ],
+   "ats": "example",
+   "url": "https://example.com/jobs/8",
+   "posted": "2026-10-30",
+   "seen": "2026-11-04",
+   "sponsor": null,
+   "sponsor_text": null,
+   "tier": null
+  },
+  {
+   "id": "x9",
+   "company": "Fakeco",
+   "title": "Finance Intern",
+   "location": "Remote, US",
+   "us": true,
+   "kind": "intern",
+   "flags": [],
+   "ats": "example",
+   "url": "https://example.com/jobs/9",
+   "posted": "2026-10-30",
+   "seen": "2026-11-04",
+   "sponsor": null,
+   "sponsor_text": {
+    "verdict": "no",
+    "quote": "No visa sponsorship available."
+   },
+   "tier": null
+  },
+  {
+   "id": "x10",
+   "company": "Fakeco",
+   "title": "Operations Analyst",
+   "location": "Seattle, WA",
+   "us": true,
+   "kind": "entry",
+   "flags": [],
+   "ats": "example",
+   "url": "https://example.com/jobs/10",
+   "posted": null,
+   "seen": "2026-11-04",
+   "sponsor": {
+    "lca_recent": 12,
+    "lca_total": 36,
+    "last_fy": 2026,
+    "source": "DOL"
+   },
+   "sponsor_text": null,
+   "tier": null
+  }
+ ]
+}

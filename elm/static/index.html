@@ -1,0 +1,895 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mika Job Dashboard</title>
+<link rel="icon" href="/mika-icon.png" type="image/png">
+<style>
+:root{
+  --bg:#F7F9FD; --surface:#FFFFFF; --surface-2:#EEF3FA; --line:#D8E0EC;
+  --ink:#12203A; --ink-2:#3E4C66; --ink-3:#55627A;
+  --accent:#0F4D92; --sable:#E8A33D; --sable-soft:#FFF3DC;
+  --acad:#1757B8; --acad-bg:#E4EEFD; --rec:#C4500F; --rec-bg:#FFEBDD; --camp:#0E8355; --camp-bg:#DFF6EA;
+  --warn:#C0271A; --warn-bg:#FFE9E6;
+  --display:"Yale 2024","YaleNew",Georgia,"Times New Roman",serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --shadow:0 1px 2px rgba(18,32,58,.06),0 8px 22px rgba(18,32,58,.07);
+}
+*{box-sizing:border-box}
+html{color-scheme:light}
+body{margin:0;background:radial-gradient(900px 420px at 0% 0%,#DDEAFF 0,rgba(221,234,255,0) 70%),radial-gradient(800px 380px at 100% 0%,#FFE9CC 0,rgba(255,233,204,0) 70%),var(--bg) no-repeat;color:var(--ink);font:16px/1.55 var(--sans)}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+a{color:var(--accent)}
+:focus-visible{outline:3px solid var(--sable);outline-offset:2px}
+[hidden]{display:none!important}
+.muted{color:var(--ink-3);font-size:14px}
+h2{font:700 21px/1.2 var(--display);margin:0}
+.bar{position:sticky;top:0;z-index:10;background:linear-gradient(120deg,#0F4D92,#286DC0);color:#fff;box-shadow:var(--shadow)}
+.bar-in{max-width:1120px;margin:0 auto;padding:10px 18px;display:flex;align-items:center;gap:14px}
+.logo{font:700 24px/1.1 var(--display)}
+.nav{display:flex;gap:4px;margin-left:8px}
+.nav button{white-space:nowrap;border:0;background:none;color:#fff;opacity:.8;font-weight:650;padding:8px 14px;border-radius:999px}
+.nav button[aria-selected="true"]{background:rgba(255,255,255,.2);opacity:1}
+.sp-fill{flex:1}
+.bar .lang{border:1.5px solid rgba(255,255,255,.5);background:none;color:#fff;border-radius:999px;padding:6px 14px;font-weight:650;white-space:nowrap}
+.wrap{max-width:1120px;margin:0 auto;padding:22px 18px 28px}
+.lead{margin:0 0 14px;color:var(--ink-2)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}
+.btn{background:var(--accent);color:#fff;border:0;border-radius:999px;padding:9px 18px;font-weight:650;text-decoration:none;display:inline-block}
+.btn.ghost{background:var(--surface);color:var(--accent);border:1.5px solid var(--accent)}
+.btn.sm{padding:5px 12px;font-size:14px;white-space:nowrap}
+.btn:disabled{opacity:.5;cursor:default}
+.filters{padding:14px 16px;display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
+.qrow{flex-wrap:nowrap;gap:8px}.qrow select{flex:0 1 230px;min-width:0;padding:9px 10px;border:1px solid var(--line);border-radius:12px;background:#fff;font-size:15px}
+@media (max-width:560px){.qrow{flex-wrap:wrap}.qrow select{flex:1 1 100%}}
+.filters input[type=search]{width:100%;flex:1;min-width:0;padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;font-size:16px}
+.toggles{display:flex;gap:8px;flex-wrap:wrap}
+.tog{font-size:14px;font-weight:650;color:var(--ink-2);border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:5px 13px}
+.tog[aria-pressed="true"]{background:linear-gradient(120deg,#0F4D92,#2F7BE5);border-color:#1F63C4;color:#fff;box-shadow:0 3px 10px rgba(31,99,196,.28)}
+.cols{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:24px;align-items:start}
+@media (max-width:920px){.cols{grid-template-columns:1fr;gap:16px}}
+.role{padding:14px 16px;margin-bottom:12px;border-left:5px solid var(--line);transition:transform .15s ease,box-shadow .15s ease}
+.role[data-k=intern]{border-left-color:#F08A3C}.role[data-k=entry]{border-left-color:#2F7BE5}.role[data-k=startup]{border-left-color:#18A56A}.role[data-k=coop]{border-left-color:#8B5CF6}
+.chip.coop{color:#6D3FD6;background:#F1EBFF;border-color:#D6C7FB}
+@media (hover:hover){.role:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(18,32,58,.13)}}
+.fhd{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap}.fhd h2{color:var(--accent)}
+.role h3{margin:0;font:700 18px/1.3 var(--sans)}
+.role .co{color:var(--ink-2);font-weight:650}
+.meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;align-items:center}
+.chip{font-size:14px;color:var(--ink-2);border:1px solid var(--line);border-radius:999px;padding:1px 10px}
+.chip.intern{color:var(--rec);background:var(--rec-bg);border-color:#F3C7A8}
+.chip.entry{color:var(--acad);background:var(--acad-bg);border-color:#BCD3F5}
+.chip.startup{color:var(--camp);background:var(--camp-bg);border-color:#A9DCC0}
+.sp.sponsored{font-size:11.5px;font-weight:700;color:#0A6B3B;background:#DCF3E6;border:1px solid #A9DCC0;border-radius:999px;padding:1px 8px;white-space:nowrap}
+.quote{margin:10px 0 0;padding:8px 12px;border-left:3px solid var(--sable);background:var(--sable-soft);border-radius:0 10px 10px 0;font-size:14px;color:var(--ink-2)}
+.quote.no{border-color:var(--warn);background:var(--warn-bg)}
+.apply .btn:not(.ghost){background:linear-gradient(120deg,#0F4D92,#2F7BE5);box-shadow:0 3px 10px rgba(31,99,196,.25)}
+.apply{margin-top:12px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.legend{padding:12px 16px;margin-bottom:16px;font-size:14px;color:var(--ink-2)}
+.legend p{margin:6px 0 0}
+.stripe{display:inline-block;border-left:5px solid;padding:0 6px;font-weight:650;color:var(--ink-2)}
+.side .card{padding:14px 16px;margin-bottom:14px}
+.side p{margin:6px 0 10px;color:var(--ink-2);font-size:15px}
+.more{display:block;width:100%;border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:10px;color:var(--accent);font-weight:600;margin-bottom:12px}
+.empty{padding:22px 16px;text-align:center;color:var(--ink-3)}
+.foot{max-width:1120px;margin:0 auto;padding:0 18px 110px;color:var(--ink-3);font-size:14px;line-height:1.6}
+.ev{padding:12px 16px;margin-bottom:10px}
+.ev b{display:block}.ev{overflow-wrap:anywhere}
+/* chat */
+/* the chat button is Mika's: Mika peeks from the right edge; the label slides out on hover or focus */
+.fab{position:fixed;right:0;bottom:84px;z-index:20;border:0;border-radius:999px 0 0 999px;background:#fff;box-shadow:0 4px 18px rgba(18,32,58,.22);padding:5px 8px 5px 6px;display:flex;align-items:center;gap:0;font-weight:700;color:var(--ink);transform:translateX(22px);transition:transform .18s ease}
+.fab .mika{width:58px;height:44px}
+.fab span{max-width:0;overflow:hidden;white-space:nowrap;transition:max-width .18s ease,margin .18s ease}
+.fab:hover,.fab:focus-visible{transform:none}
+.fab:hover span,.fab:focus-visible span{max-width:140px;margin:0 8px 0 6px}
+@media (hover:none){.fab{transform:translateX(14px)}}
+/* the chat window is Mika SOM's: Mika bowing in the header, display-font title, plain × close, bubbles with a tail corner */
+.chat{position:fixed;right:20px;bottom:20px;z-index:30;width:min(400px,calc(100vw - 24px));height:min(620px,calc(100vh - 90px));display:flex;flex-direction:column;background:var(--surface);border-radius:20px;box-shadow:0 12px 48px rgba(18,32,58,.35);overflow:hidden}
+@media (max-width:560px){.chat{left:8px;right:8px;bottom:8px;width:auto;height:calc(100dvh - 72px);max-height:none}}
+.chat-hd{display:flex;align-items:center;gap:10px;padding:10px 14px;color:#fff;background:linear-gradient(120deg,#0F4D92,#286DC0);font:700 19px var(--display)}
+.chat-hd .mika{width:40px;height:40px}
+.chat-hd #chatX{margin-left:auto;border:0;background:none;color:#fff;font-size:24px;line-height:1;width:auto;height:auto;padding:2px 4px}
+.xclose{width:32px;height:32px;border-radius:50%;border:1px solid var(--line);background:rgba(255,255,255,.92);color:var(--ink-2);font-size:16px;line-height:1}
+.msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;min-height:140px}
+.m{padding:10px 14px;border-radius:18px;max-width:92%;white-space:pre-wrap;overflow-wrap:anywhere;font-size:15px}
+.m.u{align-self:flex-end;background:var(--accent);color:#fff;border-bottom-right-radius:6px}
+.m.a{align-self:flex-start;background:var(--surface-2);border-bottom-left-radius:6px}
+.chat form{display:flex;gap:8px;padding:10px;border-top:1px solid var(--line)}
+.chat input{flex:1;min-width:0;padding:9px 12px;border:1px solid var(--line);border-radius:12px;font-size:16px}
+.chat .note{padding:0 12px 8px;font-size:12px;color:var(--ink-3)}
+/* interests, sort, feedback */
+.int{padding:14px 16px;margin-bottom:16px;position:relative}
+.int h2{padding-right:40px}
+.int .xclose{position:absolute;top:10px;right:10px}
+.int label.f,.int .f{display:block;font-weight:650;margin:12px 0 6px;color:var(--ink-2)}
+.int select,.int input[type=text]{width:100%;padding:8px 12px;border:1px solid var(--line);border-radius:12px;background:#fff;font-size:16px;margin-top:6px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.int .acts{margin-top:14px}
+.int .toggles{gap:6px}.int .tog{font-size:13.5px;padding:3px 11px}
+.int .exsum{font-size:14.5px;margin:0 0 6px}
+.sortrow{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+.sortrow select{padding:6px 10px;border:1px solid var(--line);border-radius:999px;background:#fff;font-size:14px;font-weight:650;color:var(--ink-2)}
+.linkbtn{border:0;background:none;color:var(--ink-3);font-size:13px;text-decoration:underline;padding:2px 4px}
+.why{margin:8px 0 0;font-size:13.5px;color:var(--ink-2)}
+.thumbs{display:flex;gap:4px}
+.thumb{border:1px solid var(--line);background:#fff;border-radius:999px;font-size:14px;line-height:1;padding:5px 9px;opacity:.75}
+.thumb:hover{opacity:1}
+.thumb[aria-pressed="true"]{opacity:1;background:var(--acad-bg);border-color:#BCD3F5}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:84px;z-index:40;background:var(--ink);color:#fff;border-radius:999px;padding:8px 16px;font-size:14px;display:flex;gap:12px;align-items:center;box-shadow:var(--shadow)}
+.toast button{background:none;border:0;color:var(--sable);font-weight:700;padding:0}
+.iv{margin-top:12px;border:1px dashed var(--line);border-radius:12px;padding:10px}
+.iv .msgs{max-height:220px;min-height:0;padding:0 0 8px}
+.chip.x{cursor:pointer;background:var(--acad-bg);border-color:#BCD3F5;color:var(--acad)}
+.chip.x::after{content:" ✕";font-size:12px}
+.chip.neg{background:var(--warn-bg);border-color:#F5B9B2;color:var(--warn)}
+@media (max-width:520px){.nav button{padding:8px 9px}.bar-in{gap:8px;padding:8px 12px}.logo{font-size:19px}.wrap{padding:16px 12px}}
+@media (max-width:440px){.nav button{padding:7px 6px;font-size:14px}.bar-in{gap:6px;padding:8px 8px}.logo{font-size:16px}.lang{padding:5px 9px;font-size:13px}}
+/* mascot, hero, quote of the day */
+.mika{object-fit:contain;display:block}
+.logo{display:flex;align-items:center;gap:8px;white-space:nowrap;flex:none}.logo .mika{width:42px;height:42px}   /* Mika's app icon (head and blue scarf), drawn for small sizes and dark bars */
+.lg-short{display:none}@media (max-width:720px){.lg-full{display:none}.lg-short{display:inline}}@media (max-width:430px){.lg-short{display:none}}
+.hero{display:flex;gap:20px;align-items:center;padding:18px 24px;border-radius:22px;margin-bottom:18px;background:linear-gradient(120deg,#D6E6FF,#EEF5FF 55%,#FFE5BF);border:1px solid #CBDAF0;box-shadow:var(--shadow)}
+.hero .mika{width:104px;height:104px;flex:none;cursor:pointer}
+@media (prefers-reduced-motion:no-preference){.hero .mika.pop{animation:pop .35s ease-out 1}}
+@keyframes pop{0%{transform:scale(.94) translateY(3px)}60%{transform:scale(1.05) translateY(-4px)}100%{transform:none}}
+.hero-nm{font:700 26px/1.1 var(--display);color:var(--accent)}
+.hero .lead{margin:6px 0 0}
+.dq{margin:12px 0 0;padding:8px 12px;border-left:3px solid var(--sable);background:var(--sable-soft);border-radius:0 10px 10px 0;color:var(--ink);max-width:70ch}
+.dq q{font:650 17px/1.45 var(--sans);quotes:"“" "”"} .dq .by{display:block;margin-top:4px;font-size:14px;color:var(--ink-2)} .dq .orig{display:block;font-size:13px;color:var(--ink-3);font-style:italic}
+.dq .occ{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--rec);background:var(--rec-bg);border-radius:999px;padding:1px 9px;margin-bottom:4px}
+@media (max-width:640px){.hero{padding:14px;gap:12px}.hero .mika{width:64px;height:64px}.hero-nm{font-size:21px}}
+.empty .mika{width:84px;height:84px;margin:0 auto 8px}
+.cards{display:flex;flex-direction:column;gap:8px;align-self:stretch}.cards .role{margin:0;padding:10px 12px}.cards .role h3{font-size:16px}
+.m .mika{width:44px;height:44px;margin-bottom:4px}
+.chip.found{color:#B0306A;background:#FDE8F1;border-color:#F4BCD5}   /* pink: purple is the co-op colour */
+.hideline{padding:10px 16px;margin-bottom:12px;font-size:14.5px;color:var(--ink-2);background:var(--sable-soft);border:1px solid #F2D9A8;border-radius:12px}
+.find{padding:14px 16px;margin-bottom:12px}.find .row{margin-top:8px}.find input[type=text]{flex:1;min-width:0;padding:9px 12px;border:1px solid var(--line);border-radius:12px;font-size:16px}
+.ex .chip.x.neg{cursor:pointer}
+.save{border:1.5px solid var(--line);background:#fff;border-radius:999px;font-size:13.5px;font-weight:650;padding:4px 11px;color:var(--ink-2)}
+.save[aria-pressed="true"]{background:var(--sable-soft);border-color:var(--sable);color:var(--ink)}
+.app{padding:12px 14px;margin-bottom:10px}.app h3{margin:0;font:700 17px/1.3 var(--sans)}
+.app .row{margin-top:8px}.app select,.app input,.app textarea{padding:6px 10px;border:1px solid var(--line);border-radius:10px;background:#fff;font-size:15px}
+.app textarea{flex:1;min-width:180px;resize:vertical}
+.stg{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 12px}.stg .chip b{margin-left:4px}
+.chip.gone{color:var(--warn);background:var(--warn-bg);border-color:#F5B9B2}
+.footlinks a{margin-right:12px}
+@media (max-width:520px){.hero-nm{font-size:19px}}
+</style>
+</head>
+<body>
+<header class="bar"><div class="bar-in">
+  <div class="logo" id="logo" title="Mika Job Dashboard"><img class="mika" src="/mika-icon.png" alt="Mika Job Dashboard"><span class="lg-full">Mika Job Dashboard</span><span class="lg-short">Mika Jobs</span></div>
+  <nav class="nav" role="tablist"><button type="button" role="tab" id="tabJobs" aria-selected="true"></button><button type="button" role="tab" id="tabEvents" aria-selected="false"></button><button type="button" role="tab" id="tabApps" aria-selected="false"></button></nav>
+  <div class="sp-fill"></div>
+  <button type="button" class="lang" id="lang"></button>
+</div></header>
+
+<main class="wrap">
+  <div class="hero"><img class="mika" id="heroMika" src="/mika/sit.webp" alt="">
+    <div><div class="hero-nm" id="heroNm">Mika Job Dashboard</div><p class="lead" id="lead"></p>
+    <div class="dq" id="dq" hidden><span class="occ" id="dqOcc" hidden></span><q id="dqText"></q><span class="orig" id="dqOrig" hidden></span><span class="by"><span id="dqBy"></span> <a id="dqSrc" target="_blank" rel="noopener noreferrer"></a></span></div></div></div>
+  <section id="jobsView">
+    <div class="cols"><div>
+      <div class="card int" id="intCard" hidden>
+        <button type="button" class="xclose" id="intX" aria-label="Close">✕</button>
+        <h2 id="intT"></h2><p class="muted" id="intP"></p>
+        <div class="f" id="intKindL"></div><div class="toggles" id="intKind"></div>
+        <div class="f" id="intMajorL"></div>
+        <div class="toggles" id="intMajors"></div><div class="row" style="margin-top:6px"><select id="intMajor" style="flex:1;min-width:0"></select></div>
+        <div class="row" id="intMajorOther" hidden style="margin-top:6px"><input type="text" id="intMajorTx" maxlength="60" autocomplete="off" style="flex:1;min-width:0"><button type="button" class="btn sm" id="intMajorAdd"></button></div>
+        <div class="f" id="intChipsL"></div><div class="toggles" id="intChips"></div>
+        <input type="text" id="intText" maxlength="80" autocomplete="off">
+        <div class="f" id="intExL"></div><p class="muted exsum" id="intExSum"></p><div id="intExBox" hidden><p class="muted" id="intExP" style="margin:0 0 6px"></p><div class="toggles ex" id="intEx"></div></div>
+        <div id="intExtra" class="muted" style="margin-top:8px"></div>
+        <label class="f" style="font-weight:500"><input type="checkbox" id="intVisa"> <span id="intVisaL"></span></label>
+        <p class="muted" id="intVisaN" style="margin:0"></p>
+        <div class="row acts"><button type="button" class="btn sm" id="intSave"></button><button type="button" class="btn ghost sm" id="intTell"></button></div>
+        <div class="iv" id="iv" hidden>
+          <div class="msgs" id="ivMsgs" aria-live="polite"></div>
+          <p class="muted" id="ivNote" style="margin:0 0 6px"></p>
+          <form id="ivForm" class="row"><input type="text" id="ivIn" maxlength="500" autocomplete="off" style="flex:1;min-width:0;margin:0"><button class="btn sm" id="ivSend"></button></form>
+          <div id="ivProf" hidden></div>
+        </div>
+      </div>
+      <div class="card filters">
+        <div class="fhd"><h2 id="fT"></h2><span class="muted" id="fN" aria-live="polite"></span></div>
+        <div class="row qrow"><input type="search" id="q" maxlength="100" autocomplete="off"><select id="place"></select></div>
+        <div class="toggles" id="toggles"></div>
+        <div class="sortrow"><div class="row"><button type="button" class="btn ghost sm" id="intBtn"></button>
+          <select id="sort" aria-label="Sort"></select></div>
+          <span id="resetBox"><button type="button" class="linkbtn" id="resetL"></button></span></div>
+      </div>
+      <div class="card legend" id="legend"></div>
+      <div id="hideLine" class="hideline" hidden></div>
+      <div id="roles"></div>
+      <button type="button" class="more" id="more" hidden></button>
+      <div class="card find" id="findCard"><h2 id="findT"></h2><p class="muted" id="findP" style="margin:4px 0 0"></p>
+        <form class="row" id="findForm"><input type="text" id="webQ" maxlength="200" autocomplete="off"><button class="btn sm" id="webGo"></button></form>
+        <p class="muted" id="webMsg" style="margin:8px 0 0" aria-live="polite"></p><div id="webAsk" hidden class="row"><button type="button" class="btn ghost sm" id="webReq"></button></div><div id="webRes" style="margin-top:10px"></div></div>
+    </div>
+    <aside class="side">
+      <div class="card"><h2 id="stT"></h2><p id="stP"></p><a class="btn ghost sm" id="stA" href="https://tsaicity.useplop.com/" target="_blank" rel="noopener noreferrer"></a></div>
+      <div class="card"><h2 id="somT"></h2><p id="somP"></p><a class="btn ghost sm" id="somA" href="https://mika-som.onrender.com" target="_blank" rel="noopener noreferrer"></a></div>
+    </aside></div>
+  </section>
+  <section id="eventsView" hidden><div id="events"></div></section>
+  <section id="appsView" hidden><div class="card" style="padding:12px 16px;margin-bottom:12px"><h2 id="appsT"></h2><p class="muted" id="appsP" style="margin:4px 0 8px"></p>
+    <div class="stg" id="appsLegend"></div>
+    <div class="row"><button type="button" class="btn ghost sm" id="csvOut"></button><button type="button" class="btn ghost sm" id="csvInB"></button><input type="file" id="csvIn" accept=".csv,text/csv" hidden></div></div>
+    <div id="apps"></div></section>
+</main>
+<div class="foot" id="foot"></div>
+<div class="toast" id="toast" hidden role="status"></div>
+
+<button type="button" class="fab" id="chatOpen"><img class="mika" src="/mika/peek.webp" alt=""><span id="chatOpenT"></span></button>
+<div class="chat" id="chat" hidden role="dialog" aria-modal="false">
+  <div class="chat-hd"><img class="mika" src="/mika/bow.webp" alt=""><span id="chatT"></span><button type="button" id="chatX" aria-label="Close">×</button></div>
+  <div class="msgs" id="msgs" aria-live="polite"></div>
+  <div class="note" id="chatNote"></div>
+  <form id="chatForm"><input id="chatIn" maxlength="500" autocomplete="off"><button class="btn sm" id="chatSend"></button></form>
+</div>
+
+<script id="rankjs">
+/* RANK-BEGIN: pure scoring code, no DOM; elm/tests/test_rank.mjs evaluates this block. */
+const Rank = (function(){
+  const CHIPS = [
+    {id:"swe",en:"Software engineering",zh:"软件工程",kw:["software","engineer","developer","backend","frontend","full stack","fullstack"]},
+    {id:"hwe",en:"Hardware engineering",zh:"硬件工程",kw:["hardware","embedded","firmware","silicon","chip","asic","fpga"]},
+    {id:"ee",en:"Electrical engineering",zh:"电气工程",kw:["electrical","electronics","circuit","power systems","signal"]},
+    {id:"mech",en:"Mechanical / Aerospace",zh:"机械 / 航空航天",kw:["mechanical","aerospace","manufacturing","robotics","propulsion","avionics"]},
+    {id:"bio",en:"Biomedical / Biotech research",zh:"生物医学 / 生物技术研究",kw:["biomedical","biotech","biology","laboratory","lab","clinical research","genomics","bioinformatics"]},
+    {id:"chem",en:"Chemistry / Materials",zh:"化学 / 材料",kw:["chemistry","chemical","materials","polymer","process engineer"]},
+    {id:"data",en:"Data science / Analytics",zh:"数据科学 / 分析",kw:["data","analytics","analyst","insights","statistics","statistical","bi"]},
+    {id:"ml",en:"Machine learning / AI research",zh:"机器学习 / AI 研究",kw:["machine learning","ml","ai","artificial intelligence","deep learning","research scientist","nlp","applied scientist"]},
+    {id:"quant",en:"Quant / Trading",zh:"量化 / 交易",kw:["quant","quantitative","trading","trader","algorithmic"]},
+    {id:"product",en:"Product",zh:"产品",kw:["product","program manager"]},
+    {id:"consulting",en:"Consulting",zh:"咨询",kw:["consultant","consulting","strategy","advisory"]},
+    {id:"finance",en:"Finance / Banking",zh:"金融 / 银行",kw:["finance","financial","banking","banker","accounting","treasury","audit"]},
+    {id:"investing",en:"Investing / VC",zh:"投资 / 风投",kw:["investment","investing","venture","portfolio","equity research","private equity"]},
+    {id:"marketing",en:"Marketing",zh:"市场营销",kw:["marketing","growth","brand","communications","content"]},
+    {id:"ops",en:"Operations / Supply chain",zh:"运营 / 供应链",kw:["operations","supply chain","logistics","procurement","planning"]},
+    {id:"sustain",en:"Sustainability / Climate / Energy",zh:"可持续 / 气候 / 能源",kw:["sustainability","energy","climate","renewable","environmental"]},
+    {id:"health",en:"Healthcare / Public health",zh:"医疗 / 公共卫生",kw:["health","healthcare","public health","patient","medical","epidemiology"]},
+    {id:"policy",en:"Policy / Government / NGO",zh:"政策 / 政府 / NGO",kw:["policy","government","public sector","nonprofit","ngo","program"]},
+    {id:"edu",en:"Education",zh:"教育",kw:["education","teaching","teacher","tutor","curriculum","learning"]},
+    {id:"media",en:"Media / Journalism",zh:"媒体 / 新闻",kw:["media","journalism","editorial","writer","reporter","producer"]},
+    {id:"design",en:"Design / UX / Architecture",zh:"设计 / UX / 建筑",kw:["design","designer","ux","ui","architect","architecture"]},
+    {id:"law",en:"Law / Legal",zh:"法律",kw:["legal","law","paralegal","compliance","counsel"]},
+    {id:"sales",en:"Sales / BD",zh:"销售 / 商务拓展",kw:["sales","business development","account executive","customer success","partnerships"]},
+    {id:"arts",en:"Arts / Museums",zh:"艺术 / 博物馆",kw:["museum","curator","gallery","archive","arts","collections"]}
+  ];
+  const MAJORS = [
+    {id:"cs",g:"comp",en:"Computer Science",zh:"计算机科学",chips:["swe","ml","data","product"]},
+    {id:"stats",g:"comp",en:"Statistics & Data Science",zh:"统计与数据科学",chips:["data","ml","quant","investing"]},
+    {id:"appmath",g:"comp",en:"Applied Mathematics",zh:"应用数学",chips:["quant","data","ml","finance"]},
+    {id:"ee",g:"eng",en:"Electrical Engineering",zh:"电气工程",chips:["ee","hwe","swe"]},
+    {id:"me",g:"eng",en:"Mechanical Engineering",zh:"机械工程",chips:["mech","hwe"]},
+    {id:"cheme",g:"eng",en:"Chemical Engineering",zh:"化学工程",chips:["chem","sustain","ops"]},
+    {id:"bme",g:"eng",en:"Biomedical Engineering",zh:"生物医学工程",chips:["bio","health","hwe"]},
+    {id:"enveng",g:"eng",en:"Environmental Engineering",zh:"环境工程",chips:["sustain","chem"]},
+    {id:"physics",g:"sci",en:"Physics",zh:"物理",chips:["hwe","quant","ml"]},
+    {id:"chem",g:"sci",en:"Chemistry",zh:"化学",chips:["chem","bio"]},
+    {id:"bio",g:"sci",en:"MB&B / Biology",zh:"分子生物 / 生物学",chips:["bio","health"]},
+    {id:"envs",g:"sci",en:"Environmental Studies / Forestry",zh:"环境研究 / 林学",chips:["sustain","policy"]},
+    {id:"ph",g:"soc",en:"Public Health",zh:"公共卫生",chips:["health","policy","data"]},
+    {id:"econ",g:"soc",en:"Economics",zh:"经济学",chips:["finance","consulting","investing","data","policy"]},
+    {id:"gapol",g:"soc",en:"Global Affairs / Political Science",zh:"全球事务 / 政治学",chips:["policy","consulting","law"]},
+    {id:"psych",g:"soc",en:"Psychology",zh:"心理学",chips:["health","edu","marketing","data"]},
+    {id:"law",g:"soc",en:"Law",zh:"法学",chips:["law","policy"]},
+    {id:"hum",g:"hum",en:"History / English / Humanities",zh:"历史 / 英语 / 人文",chips:["media","edu","arts","policy"]},
+    {id:"arch",g:"hum",en:"Architecture / Art",zh:"建筑 / 艺术",chips:["design","arts"]},
+    {id:"other",g:"other",en:"Other",zh:"其他",chips:[]}
+  ];
+  /* Chips that are likely irrelevant for each major: PROPOSED as "hide", the student edits them. "Other" proposes nothing. */
+  const T8 = ["swe","hwe","ee","mech","bio","chem","ml","quant"], SOFT = ["arts","law","edu","media"];
+  const EX = {cs:["mech","chem","bio","health",...SOFT], stats:["mech","chem","hwe","ee",...SOFT], appmath:["bio","chem","health",...SOFT],
+    ee:["bio","chem","policy","health","marketing",...SOFT], me:["bio","policy","health","marketing","quant","investing",...SOFT],
+    cheme:["swe","hwe","ee","marketing","quant",...SOFT], bme:["marketing","quant","investing","sales",...SOFT], enveng:["swe","hwe","marketing","quant","investing","sales",...SOFT],
+    physics:["marketing","sales","policy","health",...SOFT], chem:["swe","hwe","ee","marketing","quant","investing","sales",...SOFT],
+    bio:["swe","hwe","ee","mech","marketing","quant","investing","sales",...SOFT], envs:["swe","hwe","ee","mech","chem","quant","investing","sales","law"],
+    ph:["swe","hwe","ee","mech","chem","quant","investing","sales","arts"], econ:["hwe","ee","mech","bio","chem","edu","arts","media"],
+    gapol:["swe","hwe","ee","mech","bio","chem","quant","ml","sales"], psych:["swe","hwe","ee","mech","chem","quant","investing","law"],
+    law:["swe","hwe","ee","mech","bio","chem","ml","quant","design","sales"], hum:T8, arch:["swe","hwe","ee","bio","chem","ml","quant","investing","law","sales"], other:[]};
+  MAJORS.forEach(m=>{ m.ex = EX[m.id]||[]; });
+  const STOP = new Set(["the","and","for","with","intern","internship","entry","level","junior","senior","summer","fall","spring","winter","new","grad","graduate","associate","new grad","ii","iii","remote","hybrid","full","time","part","contract","team","our"]);
+  const norm = s => " " + String(s||"").toLowerCase().replace(/[^\p{L}\p{N}+#]+/gu, " ").trim() + " ";
+  function has(hay, kw){            // whole-word match; longer words also match as a prefix (engineer ~ engineers)
+    const k = String(kw).toLowerCase().trim(); if(!k) return false;
+    return k.length <= 3 ? hay.includes(" "+k+" ") : hay.includes(" "+k);
+  }
+  function words(title){ return norm(title).trim().split(" ").filter(w=>w.length>=3 && !/^\d+$/.test(w) && !STOP.has(w)); }
+  const clamp = (v,a,b) => Math.max(a, Math.min(b, v));
+  const chipById = id => CHIPS.find(c=>c.id===id);
+  /* majors: [{id, text?}] (up to 3). Related chips are the UNION over the majors; a typed "Other" major is matched word by word
+     against the chip keyword lists and nothing is guessed when no word matches. */
+  const majorList = P => (Array.isArray(P&&P.majors)?P.majors:[]).map(m=>typeof m==="string"?{id:m}:m).filter(m=>m&&MAJORS.some(x=>x.id===m.id)).slice(0,3);
+  function otherChips(text){
+    const hay = norm(text), out = [];
+    for(const c of CHIPS) if(c.kw.some(k=>has(hay,k))) out.push(c.id);
+    return out;
+  }
+  function relatedChips(P){
+    const out = [];
+    for(const m of majorList(P)){
+      const base = m.id==="other" ? otherChips(m.text||"") : (MAJORS.find(x=>x.id===m.id).chips);
+      base.forEach(c=>{ if(!out.some(o=>o.chip===c)) out.push({chip:c, major:m.id}); });
+    }
+    return out;
+  }
+  function suggestExclude(majors){
+    const ms = majorList({majors}); if(!ms.length) return [];
+    let ex = null;
+    for(const m of ms){ const e = MAJORS.find(x=>x.id===m.id).ex; ex = ex===null ? e.slice() : ex.filter(c=>e.includes(c)); }
+    const keep = new Set(relatedChips({majors:ms}).map(o=>o.chip));
+    return ex.filter(c=>!keep.has(c));
+  }
+  const roleChips = r => { const h = norm(r.title); return CHIPS.filter(c=>c.kw.some(k=>has(h,k))).map(c=>c.id); };
+  /* a role is hidden only when its title matches chips and ALL of them are excluded (and none picked, no keyword hit) */
+  function isHidden(r, P){
+    const ex = (P&&P.exclude)||[]; if(!ex.length) return false;
+    const m = roleChips(r); if(!m.length) return false;
+    const picked = new Set((P.chips)||[]); if(m.some(c=>picked.has(c)||!ex.includes(c))) return false;
+    const h = norm(r.title);
+    return !([...(P.keywords||[]), ...String(P.text||"").split(/[,;\n]+/)].map(x=>x.trim()).filter(x=>x.length>=2).some(k=>has(h,k)));
+  }
+  function split(roles, P, showAll){
+    const hidden = roles.filter(r=>isHidden(r,P));
+    return {show: showAll ? roles : roles.filter(r=>!hidden.includes(r)), hidden};
+  }
+  const hasSponsor = r => { const s=r.sponsor; return !!(s && typeof s==="object" && (s.lca_recent||s.lca_total)); };
+
+  /* P: {kind:"intern|entry|both|", majors:[{id,text?}], exclude[], chips[], text, keywords[], avoid[], locations[], visa}
+     Lr: {co:{company:w}, w:{word:w}, st:number, t:ms}.  Returns {score, why:[{k,...}], liked:company|null} */
+  function score(r, P, Lr, now){
+    P = P || {}; Lr = Lr || {co:{},w:{},st:0}; now = now || Date.now();
+    const hay = norm(r.title), why = []; let s = 0;
+    if((P.kind==="intern"||P.kind==="entry")){
+      if(r.kind===P.kind){ s += 3; why.push({k:"kind",v:r.kind}); } else s -= 1.5;
+    }
+    const picked = new Set(P.chips||[]); let n = 0;
+    for(const id of picked){
+      const c = chipById(id); if(!c) continue;
+      if(c.kw.some(k=>has(hay,k))){ s += 4; if(n++ < 2) why.push({k:"chip",id}); }
+    }
+    for(const o of relatedChips(P)){
+      if(picked.has(o.chip)) continue;
+      const c = chipById(o.chip);
+      if(c && c.kw.some(k=>has(hay,k))){ s += 1.5; why.push({k:"major",id:o.major}); break; }
+    }
+    const kws = [...(P.keywords||[]), ...String(P.text||"").split(/[,;\n]+/)].map(x=>x.trim()).filter(x=>x.length>=2).slice(0,20);
+    let kwHit = null;
+    for(const k of kws) if(has(hay,k)){ s += 2.5; if(!kwHit){ kwHit=k; why.push({k:"kw",v:k}); } }
+    for(const a of (P.avoid||[])) if(has(hay,a)){ s -= 6; break; }
+    const loc = norm(r.location);
+    for(const l of (P.locations||[])){ if(l && has(loc,l)){ s += 1.5; why.push({k:"loc",v:l}); break; } }
+    if(P.visa && hasSponsor(r)){
+      s += 2; why.push({k:"h1b"});
+      const st = r.sponsor_text, v = st && typeof st==="object" ? st.verdict : st;
+      if(v==="likely") s += 1;
+    }
+    if(r.tier==="startup"){ const b = clamp(Lr.st||0,-2,2); if(b){ s += b; if(b>=0.6) why.push({k:"startup"}); } }
+    const co = (Lr.co||{})[String(r.company||"").toLowerCase()] || 0;
+    s += clamp(co*1.5,-5,5);
+    let ws = 0; for(const w of new Set(words(r.title))) ws += (Lr.w||{})[w]||0;
+    s += clamp(ws,-3,3);
+    if(r.posted){ const d=(now-Date.parse(r.posted))/864e5; if(d>=0 && d<14) s += 1*(1-d/14); }
+    return {score:s, why:why.slice(0,4), liked: co>=1 ? r.company : null};
+  }
+
+  /* learning: kind up=+1, down=-1, apply=+0.7 (a negative sign undoes). Old weights fade (half-life 60 days); size is capped. */
+  function decay(Lr, now){
+    now = now || Date.now();
+    const days = Lr.t ? Math.max(0,(now-Lr.t)/864e5) : 0, f = Math.pow(0.5, days/60);
+    for(const m of ["co","w"]){
+      const o = Lr[m] || {}; let e = Object.entries(o).map(([k,v])=>[k,v*f]).filter(([k,v])=>Math.abs(v)>=0.05);
+      e.sort((a,b)=>Math.abs(b[1])-Math.abs(a[1])); Lr[m] = Object.fromEntries(e.slice(0, m==="co"?150:300));
+    }
+    Lr.st = Math.abs((Lr.st||0)*f) < 0.05 ? 0 : (Lr.st||0)*f; Lr.t = now; return Lr;
+  }
+  const STRENGTH = {up:1, down:-1, apply:0.7};
+  function learn(Lr, r, kind, sign, now){
+    Lr = decay(Lr || {co:{},w:{},st:0}, now);
+    const d = (STRENGTH[kind]||0) * (sign||1), co = String(r.company||"").toLowerCase();
+    if(co) Lr.co[co] = clamp((Lr.co[co]||0)+d, -3, 3);
+    for(const w of new Set(words(r.title))) Lr.w[w] = clamp((Lr.w[w]||0)+0.4*d, -2, 2);
+    if(r.tier==="startup") Lr.st = clamp((Lr.st||0)+0.3*d, -2, 2);
+    return decay(Lr, now);
+  }
+  function sortRoles(roles, P, Lr, mode, now){
+    if(mode==="new") return roles.slice().sort((a,b)=>String(b.posted||"").localeCompare(String(a.posted||"")) || String(b.seen||"").localeCompare(String(a.seen||"")));
+    const m = new Map(roles.map(r=>[r, score(r,P,Lr,now)]));
+    return roles.slice().sort((a,b)=>m.get(b).score-m.get(a).score).map(r=>{ r._rk = m.get(r); return r; });
+  }
+  return {CHIPS, MAJORS, majorList, relatedChips, otherChips, suggestExclude, roleChips, isHidden, split, score, learn, decay, sortRoles, words, has, norm};
+})();
+/* RANK-END */
+</script>
+<script id="csvjs">
+/* CSV-BEGIN: tracking list export / import; elm/tests/test_rank.mjs evaluates this block. */
+const Csv = (function(){
+  const COLS = ["id","company","title","location","url","stage","note","next","added"], STAGES = ["saved","applied","interview","offer","closed"];
+  const esc = v => { let t = String(v==null?"":v); if(/^[=+\-@\t\r]/.test(t)) t = "'"+t; return /[",\n\r]/.test(t) ? '"'+t.replace(/"/g,'""')+'"' : t; };
+  const toCsv = list => [COLS.join(","), ...list.map(e=>COLS.map(c=>esc(e[c])).join(","))].join("\r\n")+"\r\n";
+  function parse(text){
+    const rows = []; let row = [], cell = "", q = false;
+    for(let i=0;i<text.length;i++){
+      const ch = text[i];
+      if(q){ if(ch==='"'){ if(text[i+1]==='"'){ cell+='"'; i++; } else q=false; } else cell+=ch; }
+      else if(ch==='"') q = true;
+      else if(ch===","){ row.push(cell); cell=""; }
+      else if(ch==="\n"||ch==="\r"){ if(ch==="\r"&&text[i+1]==="\n") i++; row.push(cell); cell=""; rows.push(row); row=[]; }
+      else cell+=ch;
+    }
+    if(cell||row.length){ row.push(cell); rows.push(row); }
+    return rows.filter(r=>r.some(c=>c!==""));
+  }
+  const unesc = t => /^'[=+\-@\t\r]/.test(t) ? t.slice(1) : t;
+  const okUrl = u => { try{ const x = new URL(u); return x.protocol==="https:" ? x.href : ""; }catch(e){ return ""; } };
+  function fromCsv(text){
+    const rows = parse(String(text||"").replace(/^\uFEFF/,"")); if(rows.length<2) return [];
+    const head = rows[0].map(h=>h.trim().toLowerCase()), out = [];
+    for(const r of rows.slice(1,501)){
+      const o = {}; head.forEach((h,i)=>{ if(COLS.includes(h)) o[h] = unesc(r[i]||""); });
+      if(!o.id||o.id.length>80||!o.title) continue;
+      out.push({id:o.id, company:(o.company||"").slice(0,160), title:o.title.slice(0,160), location:(o.location||"").slice(0,100), url:okUrl(o.url||""),
+        stage:STAGES.includes(o.stage)?o.stage:"saved", note:(o.note||"").slice(0,300), next:/^\d{4}-\d{2}-\d{2}$/.test(o.next||"")?o.next:"", added:/^\d{4}-\d{2}-\d{2}$/.test(o.added||"")?o.added:"", gone:false});
+    }
+    return out;
+  }
+  return {toCsv, fromCsv, esc, parse, STAGES};
+})();
+/* CSV-END */
+</script>
+<script>
+const T = {
+ en: {
+  lead:"Career dashboard. From Yale, for Yale, beyond Yale.",
+  jobs:"Jobs", events:"Events", fT:"Find roles", fN:n=>n.toLocaleString("en-US")+(n===1?" role matches":" roles match"), search:"Search company, title or place", placeL:"Location", placeAny:"Any location",
+  places:{nyc:"New York",boston:"Boston / Massachusetts",ct:"New Haven / Connecticut",bay:"SF Bay Area",socal:"Los Angeles / San Diego",seattle:"Seattle",dc:"Washington, DC",chicago:"Chicago",texas:"Texas",remote:"Remote"}, interns:"Internships", entry:"Entry-level", coops:"Co-op / in-semester / part-time", coopK:"Co-op / in-semester / part-time",
+  spons:"Sponsors with H-1B filings", startups:"Startups", mba:"Include MBA-only", us:"U.S. only",
+  badge:(fy,n)=>"Filed H-1B LCAs"+(fy?" · FY"+fy:"")+(n?" · "+n.toLocaleString()+"×":""),
+  badgeTip:"An indicator, not a guarantee; no record = unknown",
+  legendT:"How to read the green badge", stripeL:"the coloured edge of each card shows its kind.",
+  legend:"This employer has filed certified H-1B labor condition applications (LCAs) with the U.S. Department of Labor. It shows a filing history, not a promise that this role is sponsored. No record means unknown, not no. Always ask the employer.",
+  postingSays:"The posting says:", likely:"Posting mentions sponsorship", no:"Posting says it does not sponsor",
+  apply:"Apply on company site", posted:"Posted", intern:"Internship", entryK:"Entry-level", startup:"Startup", usOnly:"Not in the U.S.",
+  flag:{mba_only:"MBA-only", hourly:"Hourly", part_time:"Part-time", contract:"Contract"},
+  more:"Show more", none:"No roles match these filters.", count:n=>n.toLocaleString()+" roles", loading:"Loading…", err:"Could not load roles. Try again later.",
+  noEvents:"No events listed yet. Check back soon.", evOn:"On",
+  stT:"Startups", stP:"Early-stage companies hiring now.", stA:"Yale startup opportunities board (Tsai CITY)",
+  somT:"SOM student?", somP:"SOM students have their own companion with calendar, recruiting and courses.", somA:"SOM student? Try Mika",
+  foot:"Mika Job Dashboard is an independent student project, not affiliated with Yale University. Roles are read from companies' own public job pages; H-1B filing history comes from public U.S. Department of Labor data. Check every posting and every visa question with the employer.",
+  built:d=>"Data updated "+d, chat:"Ask Mika", chatT:"Ask about roles and events", chatPh:"e.g. data internships in Boston, H-1B filers", send:"Send",
+  chatNote:"Answers come from this site's data only. Limited messages per hour.", thinking:"…", chatHi:"Hi! Ask me for roles or events, for example: internships at startups."
+ },
+ zh: {
+  lead:"职业看板 · From Yale, for Yale, beyond Yale",
+  jobs:"职位", events:"活动", fT:"找职位", fN:n=>"共 "+n.toLocaleString("en-US")+" 个职位符合", search:"搜索公司、职位或地点", placeL:"地点", placeAny:"所有地点",
+  places:{nyc:"纽约",boston:"波士顿 / 麻省",ct:"纽黑文 / 康涅狄格",bay:"旧金山湾区",socal:"洛杉矶 / 圣地亚哥",seattle:"西雅图",dc:"华盛顿特区",chicago:"芝加哥",texas:"德州",remote:"远程"}, interns:"实习", entry:"入门级", coops:"Co-op / 学期中 / 兼职", coopK:"Co-op / 学期中 / 兼职",
+  spons:"有 H-1B 申报记录", startups:"创业公司", mba:"包含仅限 MBA", us:"仅美国",
+  badge:(fy,n)=>"曾申报 H-1B LCA"+(fy?" · FY"+fy:"")+(n?" · "+n.toLocaleString()+"次":""),
+  badgeTip:"只是参考指标，不是保证；没有记录 = 未知",
+  legendT:"绿色徽章的含义", stripeL:"卡片左边的颜色表示职位类型。",
+  legend:"该雇主曾向美国劳工部提交过已获批的 H-1B 劳工条件申请（LCA）。这只是申报历史，不代表此职位会 sponsor。没有记录只代表未知，不代表不 sponsor。请务必向雇主确认。",
+  postingSays:"职位页面写道：", likely:"职位页面提到 sponsor", no:"职位页面写明不 sponsor",
+  apply:"到公司官网申请", posted:"发布于", intern:"实习", entryK:"入门级", startup:"创业公司", usOnly:"不在美国",
+  flag:{mba_only:"仅限 MBA", hourly:"时薪制", part_time:"兼职", contract:"合同制"},
+  more:"显示更多", none:"没有符合筛选条件的职位。", count:n=>n.toLocaleString()+" 个职位", loading:"加载中…", err:"职位加载失败，请稍后再试。",
+  noEvents:"暂时没有活动，请稍后再来。", evOn:"日期",
+  stT:"创业公司", stP:"正在招聘的早期公司。", stA:"Yale 创业机会看板（Tsai CITY）",
+  somT:"SOM 学生？", somP:"SOM 学生有自己的助手：日历、招聘和课程。", somA:"SOM 学生？试试 Mika",
+  foot:"Mika Job Dashboard 是学生独立项目，与 Yale 大学无关。职位来自各公司公开的招聘页面；H-1B 申报记录来自美国劳工部公开数据。请向雇主核实每个职位和签证问题。",
+  built:d=>"数据更新于 "+d, chat:"问问 Mika", chatT:"询问职位和活动", chatPh:"例如：波士顿的数据实习，有 H-1B 申请记录", send:"发送",
+  chatNote:"回答只来自本站数据。每小时消息数有限。", thinking:"…", chatHi:"你好！可以问我职位或活动，例如：创业公司的实习。"
+ }
+};
+let lang = (()=>{try{return localStorage.getItem("elm-lang")}catch(e){return null}})() || (navigator.language||"").startsWith("zh") ? "zh":"en";
+try{ const s=localStorage.getItem("elm-lang"); if(s==="en"||s==="zh") lang=s; }catch(e){}
+const L = () => T[lang];
+const $ = id => document.getElementById(id);
+const F = {kind:"", sponsor_only:false, startup_only:false, mba:false, us_only:false, q:"", place:""};
+const PLACES=["nyc","boston","ct","bay","socal","seattle","dc","chicago","texas","remote"];
+try{ Object.assign(F, JSON.parse(localStorage.getItem("elm-filters")||"{}")); F.q=""; }catch(e){}
+let offset=0, total=0, meta=null, history=[], busy=false;
+
+function el(tag, cls, text){ const e=document.createElement(tag); if(cls) e.className=cls; if(text!=null) e.textContent=text; return e; }
+function safeUrl(u){ try{ const x=new URL(u); return (x.protocol==="https:"||x.protocol==="http:")?x.href:null; }catch(e){ return null; } }
+
+Object.assign(T.en,{
+ myInt:"My interests", intT:"What are you looking for?", intP:"Optional. Saved only in this browser. Mika uses it to sort jobs and to hide fields you don't want; hidden roles are one click away.",
+ kindL:"Looking for", kInt:"Internship", kFt:"Full-time", kBoth:"Both", majorL:"Major", majorPh:"Or type your major", majorNone:"Choose a major…",
+ grp:{comp:"Computing & data",eng:"Engineering",sci:"Sciences",soc:"Social sciences & policy",hum:"Humanities & arts",other:"Other"},
+ rolesL:"Roles you want", rolesPh:"Anything else, e.g. robotics, museum, climate (comma-separated)",
+ visaL:"I need visa sponsorship", visaN:"Stays in this browser. It only ranks employers with H-1B filings higher; it is never sent anywhere.",
+ save:"Save", tell:"Tell Mika about yourself", close:"Close", sortRec:"Recommended for you", sortNew:"Newest",
+ fromIv:"From your interview", kwL:"keywords", avoidL:"avoid", placesL:"places", clearIv:"Clear",
+ why:x=>"Why: matches "+x, because:c=>"Because you liked roles at "+c,
+ wKind:{intern:"internship",entry:"full-time"}, wMajor:m=>"your major ("+m+")", wLoc:l=>"location "+l, wH1b:"H-1B filer", wStartup:"startups",
+ up:"Like this role", down:"Hide this role and show fewer like it", hidden:"Role hidden.", undo:"Undo",
+ reset:"Reset what Mika learned", resetQ:"Forget your likes, hides and clicks?", resetYes:"Yes, reset", resetNo:"Cancel", resetDone:"Reset.",
+ ivNote:"Don't type your name or visa status. Nothing you type here is stored on the server.", ivPh:"Your answer", ivUse:"Use this", ivNot:"Not now",
+ ivAdd:"Add a keyword", ivT:"Mika suggests this profile. Click a chip to remove it, then confirm.", ivBusy:"The assistant is busy. Use the chips above instead."
+});
+Object.assign(T.zh,{
+ myInt:"我的兴趣", intT:"你在找什么？", intP:"可选。只保存在本浏览器中。Mika 用它来排序，并隐藏你不想看的方向；被隐藏的职位点一下就能重新显示。",
+ kindL:"想找", kInt:"实习", kFt:"全职", kBoth:"都可以", majorL:"专业", majorPh:"或直接输入你的专业", majorNone:"选择专业…",
+ grp:{comp:"计算机与数据",eng:"工程",sci:"理科",soc:"社科与政策",hum:"人文与艺术",other:"其他"},
+ rolesL:"想做的岗位", rolesPh:"还有别的吗？例如 机器人、博物馆、气候（用逗号分隔）",
+ visaL:"我需要签证 sponsor", visaN:"只保存在本浏览器。它只会把有 H-1B 申报记录的雇主排得更靠前，不会发送到任何地方。",
+ save:"保存", tell:"和 Mika 聊聊你自己", close:"关闭", sortRec:"为你推荐", sortNew:"最新",
+ fromIv:"来自访谈", kwL:"关键词", avoidL:"避开", placesL:"地点", clearIv:"清除",
+ why:x=>"原因：符合 "+x, because:c=>"因为你喜欢过 "+c+" 的职位",
+ wKind:{intern:"实习",entry:"全职"}, wMajor:m=>"你的专业（"+m+"）", wLoc:l=>"地点 "+l, wH1b:"H-1B 申报雇主", wStartup:"创业公司",
+ up:"喜欢这个职位", down:"隐藏此职位，并减少类似推荐", hidden:"已隐藏此职位。", undo:"撤销",
+ reset:"重置 Mika 学到的内容", resetQ:"清除你的点赞、隐藏和点击记录？", resetYes:"是，重置", resetNo:"取消", resetDone:"已重置。",
+ ivNote:"请不要输入姓名或签证状态。你在这里输入的内容不会保存在服务器上。", ivPh:"你的回答", ivUse:"使用此档案", ivNot:"暂不",
+ ivAdd:"添加关键词", ivT:"Mika 给出了这个档案。点击标签可删除，然后确认。", ivBusy:"助手现在忙，请先用上面的标签。"
+});
+Object.assign(T.en,{
+ tabApps:"My applications", quoteSrc:"source",
+ majorsL:"Majors (up to 3)", majorAdd:"Add a major…", maxMajors:"Up to 3 majors", majorPh:"Type your major", addB:"Add", rmTip:"Click to remove",
+ exNow:x=>"Hidden: "+x+".", exNone:"Nothing hidden.", exEdit:"Change", exDone:"Done",
+ exL:"Hide roles about", exP:"Suggested from your majors; click to change. Hidden roles are never deleted: a line above the list lets you show them.",
+ hideLine:n=>n.toLocaleString()+" roles hidden because they don't match your majors and interests", showThem:"Show them", hideThem:"Hide them",
+ showingLine:n=>"Showing "+n.toLocaleString()+" roles that don't match your majors and interests",
+ foundBadge:"Found by a student", foundLegend:"Found by a student: someone's search found this posting, and our code read it again on the company's own page before it was shown. It is shared with everyone.",
+ findT:"Can't find it?", findP:"Search the web for more roles. Every result is read again on the company's own page before it is shown.", findPh:"e.g. data analyst intern in Boston",
+ findGo:"Search", finding:"Searching…", findNone:"Nothing new found for that.", findNew:(a,k)=>a+" new, "+k+" already listed", findErr:"The search did not work. Try again later.",
+ reqBtn:"Tell us what you're looking for", reqThanks:"Thanks. We will look for it when search is available.", reqRate:"Too many requests today. Try again tomorrow.",
+ saveB:"Save", savedB:"Saved ✓", stg:{saved:"Saved",applied:"Applied",interview:"Interview",offer:"Offer",closed:"Closed"},
+ appsP:"Saved only in this browser. Export a CSV so you do not lose your list.", noteL:"Note", nextL:"Next step", gone:"No longer listed", rm:"Remove", rmSure:"Remove?", yes:"Yes", no:"No",
+ csvOut:"Export CSV", csvIn:"Import CSV", appsEmpty:"Nothing saved yet. Press Save on a role.", imported:n=>n+" imported", importBad:"Could not read that file.", appliedToast:"Applied. Good luck!",
+ stats:"Stats", chatBusyTip:"busy"
+});
+Object.assign(T.zh,{
+ tabApps:"我的申请", quoteSrc:"出处",
+ majorsL:"专业（最多 3 个）", majorAdd:"添加专业…", maxMajors:"最多 3 个专业", majorPh:"输入你的专业", addB:"添加", rmTip:"点击删除",
+ exNow:x=>"已隐藏："+x+"。", exNone:"没有隐藏任何方向。", exEdit:"修改", exDone:"完成",
+ exL:"隐藏这些方向的职位", exP:"根据你的专业给出的建议，点击可修改。被隐藏的职位不会删除：列表上方有一行可以重新显示。",
+ hideLine:n=>"有 "+n.toLocaleString()+" 个职位因与你的专业和兴趣不符而被隐藏", showThem:"显示它们", hideThem:"隐藏它们",
+ showingLine:n=>"正在显示 "+n.toLocaleString()+" 个与你的专业和兴趣不符的职位",
+ foundBadge:"学生找到的", foundLegend:"学生找到的：有同学的搜索找到了这个职位，我们的程序在公司官网页面上重新读取并确认后才显示。所有人共享。",
+ findT:"没找到？", findP:"在网上搜索更多职位。每个结果在显示前都会到公司官网页面重新读取。", findPh:"例如：波士顿的数据分析实习",
+ findGo:"搜索", finding:"搜索中…", findNone:"没有找到新的结果。", findNew:(a,k)=>"新增 "+a+" 个，已有 "+k+" 个", findErr:"搜索没有成功，请稍后再试。",
+ reqBtn:"告诉我们你想找什么", reqThanks:"谢谢。搜索恢复后我们会帮你找。", reqRate:"今天的请求太多了，请明天再试。",
+ saveB:"收藏", savedB:"已收藏 ✓", stg:{saved:"已收藏",applied:"已申请",interview:"面试",offer:"录用",closed:"已结束"},
+ appsP:"只保存在本浏览器中。请导出 CSV，以免丢失你的列表。", noteL:"备注", nextL:"下一步", gone:"已下架", rm:"删除", rmSure:"删除？", yes:"是", no:"否",
+ csvOut:"导出 CSV", csvIn:"导入 CSV", appsEmpty:"还没有收藏。在职位上点“收藏”。", imported:n=>"已导入 "+n+" 条", importBad:"无法读取该文件。", appliedToast:"已申请，祝你好运！",
+ stats:"统计", chatBusyTip:"忙"
+});
+
+const jget=(k,d)=>{ try{ const v=JSON.parse(localStorage.getItem(k)); return v&&typeof v==="object"?v:d; }catch(e){ return d; } };
+const jset=(k,v)=>{ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} };
+const strs=(a,n)=>(Array.isArray(a)?a:[]).filter(x=>typeof x==="string"&&x.length<=40).slice(0,n);
+const nums=o=>Object.fromEntries(Object.entries(o&&typeof o==="object"?o:{}).filter(([k,v])=>Number.isFinite(v)));
+let P=(()=>{ const s=jget("elm-prefs",{}); const mj=(Array.isArray(s.majors)?s.majors:(typeof s.major==="string"&&s.major?[{id:s.major,text:s.majorText}]:[])).map(m=>typeof m==="string"?{id:m}:{id:String(m&&m.id||""),text:String(m&&m.text||"").slice(0,60)}); return {kind:["intern","entry","both"].includes(s.kind)?s.kind:"", majors:Rank.majorList({majors:mj}), exclude:strs(s.exclude,12).filter(c=>Rank.CHIPS.some(x=>x.id===c)), exTouched:s.exTouched===true,
+  chips:strs(s.chips,24).filter(c=>Rank.CHIPS.some(x=>x.id===c)), text:typeof s.text==="string"?s.text.slice(0,80):"", keywords:strs(s.keywords,10), avoid:strs(s.avoid,5), locations:strs(s.locations,5),
+  visa:s.visa===true, set:s.set===true, dismissed:s.dismissed===true}; })();
+let Lr=(()=>{ const s=jget("elm-learn",{}); return Rank.decay({co:nums(s.co), w:nums(s.w), st:Number.isFinite(s.st)?s.st:0, t:Number.isFinite(s.t)?s.t:Date.now()}); })();
+let votes=nums(jget("elm-votes",{})), D=JSON.parse(JSON.stringify(P)), all=[], shown=12, resetAsk=false, ivState={hist:[],prof:null,busy:false};
+const applied=new Set(); let showHidden=false, Q=null;
+const today=()=>new Date().toISOString().slice(0,10);
+let sortMode=(()=>{ try{ const s=localStorage.getItem("elm-sort"); if(s==="rec"||s==="new") return s; }catch(e){} return P.set?"rec":"new"; })();
+const saveP=()=>jset("elm-prefs",P), saveL=()=>{ jset("elm-learn",Lr); jset("elm-votes",votes); };
+const chipLabel=id=>{ const c=Rank.CHIPS.find(x=>x.id===id); return c?c[lang]:id; };
+const majorLabel=id=>{ const m=Rank.MAJORS.find(x=>x.id===id); return m?m[lang]:""; };
+function sendSignal(id,kind){ try{ fetch("/api/signal",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({role_id:id,kind}),keepalive:true}).catch(()=>{}); }catch(e){} }
+function chatPrefs(){ return P.set?{kind:P.kind,chips:P.chips,majors:P.majors.map(m=>m.id)}:undefined; }   // never free text, never the visa box
+const mikaImg=(pose,cls)=>{ const i=el("img","mika"+(cls?" "+cls:"")); i.src="/mika/"+pose+".webp"; i.alt=""; return i; };
+function emptyCard(text,pose){ const c=el("div","card empty"); c.append(mikaImg(pose),el("div",null,text)); return c; }
+function toast(text, act, fn, pose){
+  const b=$("toast"); b.textContent=""; if(pose){ const i=mikaImg(pose); i.style.cssText="width:30px;height:30px"; b.append(i); } b.append(el("span",null,text));
+  if(act){ const u=el("button",null,act); u.type="button"; u.onclick=()=>{ b.hidden=true; fn(); }; b.append(u); }
+  b.hidden=false; clearTimeout(toast.t); toast.t=setTimeout(()=>{ b.hidden=true; },6000);
+}
+function whyLine(rk){
+  const t=L(), parts=[];
+  rk.why.forEach(w=>{ if(w.k==="kind") parts.push(t.wKind[w.v]); else if(w.k==="chip") parts.push(chipLabel(w.id)); else if(w.k==="major") parts.push(t.wMajor(majorLabel(w.id)));
+    else if(w.k==="kw") parts.push(w.v); else if(w.k==="loc") parts.push(t.wLoc(w.v)); else if(w.k==="h1b") parts.push(t.wH1b); else if(w.k==="startup") parts.push(t.wStartup); });
+  const a=parts.length?t.why(parts.join(", ")):"", b=rk.liked?t.because(rk.liked):"";
+  return [a,b].filter(Boolean).join(". ");
+}
+function vote(r,kind,card){
+  const cur=votes[r.id]||0, want=kind==="up"?1:-1;
+  if(cur===want){ Lr=Rank.learn(Lr,r,kind,-1); delete votes[r.id]; }
+  else{ if(cur) Lr=Rank.learn(Lr,r,cur===1?"up":"down",-1); Lr=Rank.learn(Lr,r,kind,1); delete votes[r.id]; votes[r.id]=want; sendSignal(r.id,kind); }
+  const ks=Object.keys(votes); while(ks.length>400) delete votes[ks.shift()];
+  saveL();
+  if(votes[r.id]===-1){ card.remove(); toast(L().hidden,L().undo,()=>{ vote(r,"down",card); render(); }); }
+  else if(card.isConnected){ card.querySelectorAll(".thumb").forEach(b=>b.setAttribute("aria-pressed", String((b.dataset.k==="up"?1:-1)===votes[r.id]))); }
+}
+function effP(){ return P.set?P:{kind:"",chips:[],keywords:[],avoid:[],locations:[],visa:false}; }
+function render(){
+  const box=$("roles"); box.textContent=""; if(rolesTotal!=null) $("fN").textContent=L().fN(rolesTotal);
+  const sp=Rank.split(all.filter(r=>votes[r.id]!==-1), effP(), showHidden);
+  const list=Rank.sortRoles(sp.show, effP(), Lr, sortMode), hl=$("hideLine"), t=L();
+  hl.textContent=""; hl.hidden=!(P.set&&sp.hidden.length);
+  if(!hl.hidden){ hl.append(document.createTextNode((showHidden?t.showingLine(sp.hidden.length):t.hideLine(sp.hidden.length))+" · "));
+    const b=el("button","linkbtn",showHidden?t.hideThem:t.showThem); b.type="button"; b.onclick=()=>{ showHidden=!showHidden; shown=12; render(); }; hl.append(b); }
+  list.slice(0,shown).forEach(r=>box.append(roleCard(r)));
+  if(!list.length) box.append(emptyCard(t.none,"dig"));
+  $("more").hidden=shown>=list.length; $("more").textContent=L().more+" ("+(list.length-shown)+")";
+}
+function toggleBtn(box,label,on,fn){ const b=el("button","tog",label); b.type="button"; b.setAttribute("aria-pressed",String(on)); b.onclick=()=>{ fn(); b.setAttribute("aria-pressed",b.getAttribute("aria-pressed")==="true"?"false":"true"); }; box.append(b); return b; }
+function addMajor(m){ if(D.majors.length>=3) return; D.majors.push(m); $("intMajorOther").hidden=true; $("intMajorTx").value=""; syncEx(); fillInt(); }
+function syncEx(){ if(!D.exTouched) D.exclude=Rank.suggestExclude(D.majors); }
+let exOpen=false;
+function exSum(){
+  const t=L(), b=$("intExSum"); b.textContent="";
+  b.append(document.createTextNode((D.exclude.length?t.exNow(D.exclude.map(chipLabel).join(lang==="zh"?"、":", ")):t.exNone)+" "));
+  const k=el("button","linkbtn",exOpen?t.exDone:t.exEdit); k.type="button"; k.onclick=()=>{ exOpen=!exOpen; $("intExBox").hidden=!exOpen; exSum(); }; b.append(k);
+}
+function fillEx(){
+  const eb=$("intEx"); eb.textContent=""; $("intExBox").hidden=!exOpen;
+  Rank.CHIPS.forEach(c=>toggleBtn(eb,c[lang],D.exclude.includes(c.id),()=>{ D.exTouched=true; D.exclude=D.exclude.includes(c.id)?D.exclude.filter(x=>x!==c.id):[...D.exclude,c.id]; exSum(); }));
+  exSum();
+}
+function postInterests(){
+  const groups=[...new Set(P.majors.map(m=>m.id==="other"?"other":(Rank.MAJORS.find(x=>x.id===m.id)||{}).g).filter(Boolean))];
+  try{ fetch("/api/interests",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({chips:P.chips,kind:P.kind,groups}),keepalive:true}).catch(()=>{}); }catch(e){}
+}
+function fillInt(){
+  const t=L();
+  $("intT").textContent=t.intT; $("intP").textContent=t.intP; $("intKindL").textContent=t.kindL; $("intMajorL").textContent=t.majorsL; $("intChipsL").textContent=t.rolesL;
+  $("intText").placeholder=t.rolesPh; $("intMajorTx").placeholder=t.majorPh; $("intVisaL").textContent=t.visaL; $("intVisaN").textContent=t.visaN;
+  $("intSave").textContent=t.save; $("intTell").textContent=t.tell; $("intX").setAttribute("aria-label",t.close); $("ivNote").textContent=t.ivNote; $("ivIn").placeholder=t.ivPh; $("ivSend").textContent=t.send;
+  const kb=$("intKind"); kb.textContent="";
+  [["intern",t.kInt],["entry",t.kFt],["both",t.kBoth]].forEach(([k,lab])=>{ const b=el("button","tog",lab); b.type="button"; b.setAttribute("aria-pressed",String(D.kind===k));
+    b.onclick=()=>{ D.kind=D.kind===k?"":k; kb.querySelectorAll(".tog").forEach((x,i)=>x.setAttribute("aria-pressed",String(["intern","entry","both"][i]===D.kind))); }; kb.append(b); });
+  const ms=$("intMajor"); ms.textContent=""; ms.append(new Option(D.majors.length>=3?t.maxMajors:t.majorAdd,""));
+  Object.keys(t.grp).forEach(g=>{ const og=document.createElement("optgroup"); og.label=t.grp[g]; Rank.MAJORS.filter(m=>m.g===g).forEach(m=>og.append(new Option(m[lang],m.id))); ms.append(og); });
+  ms.value=""; ms.disabled=D.majors.length>=3;
+  ms.onchange=()=>{ const v=ms.value; ms.value=""; if(!v) return; if(v==="other"){ $("intMajorOther").hidden=false; $("intMajorTx").focus(); } else addMajor({id:v}); };
+  $("intMajorTx").placeholder=t.majorPh; $("intMajorAdd").textContent=t.addB;
+  $("intMajorAdd").onclick=()=>{ const v=$("intMajorTx").value.trim(); if(v && /^[\p{L}\p{N} \-+&/#.',()]+$/u.test(v)) addMajor({id:"other",text:v.slice(0,60)}); };
+  const mb=$("intMajors"); mb.textContent="";
+  D.majors.forEach((m,i)=>{ const c=el("button","chip x",m.id==="other"?(m.text||majorLabel("other")):majorLabel(m.id)); c.type="button"; c.title=t.rmTip; c.onclick=()=>{ D.majors.splice(i,1); syncEx(); fillInt(); }; mb.append(c); });
+  const cb=$("intChips"); cb.textContent="";
+  Rank.CHIPS.forEach(c=>toggleBtn(cb,c[lang],D.chips.includes(c.id),()=>{ D.chips=D.chips.includes(c.id)?D.chips.filter(x=>x!==c.id):[...D.chips,c.id]; }));
+  $("intExL").textContent=t.exL; $("intExP").textContent=t.exP; fillEx();
+  $("intText").value=D.text; $("intText").oninput=e=>{ D.text=e.target.value; };
+  $("intVisa").checked=D.visa; $("intVisa").onchange=e=>{ D.visa=e.target.checked; };
+  const ex=$("intExtra"); ex.textContent="";
+  const bits=[[t.kwL,D.keywords],[t.avoidL,D.avoid],[t.placesL,D.locations]].filter(x=>x[1].length).map(x=>x[0]+": "+x[1].join(", "));
+  if(bits.length){ ex.append(document.createTextNode(t.fromIv+" · "+bits.join(" · ")+" ")); const c=el("button","linkbtn",t.clearIv); c.type="button"; c.onclick=()=>{ D.keywords=[]; D.avoid=[]; D.locations=[]; fillInt(); }; ex.append(c); }
+  // sort, button, reset
+  $("intBtn").textContent=t.myInt;
+  const so=$("sort"); so.textContent=""; so.append(new Option(t.sortRec,"rec"),new Option(t.sortNew,"new")); so.value=sortMode;
+  const rb=$("resetBox"); rb.textContent="";
+  if(!resetAsk){ const b=el("button","linkbtn",t.reset); b.type="button"; b.onclick=()=>{ resetAsk=true; fillInt(); }; rb.append(b); }
+  else{ rb.append(el("span","muted",t.resetQ+" ")); const y=el("button","linkbtn",t.resetYes); y.type="button"; const n=el("button","linkbtn",t.resetNo); n.type="button";
+    y.onclick=()=>{ Lr={co:{},w:{},st:0,t:Date.now()}; votes={}; resetAsk=false; saveL(); fillInt(); render(); toast(t.resetDone); }; n.onclick=()=>{ resetAsk=false; fillInt(); }; rb.append(y,n); }
+  renderIvProf();
+}
+function showInt(on){ $("intCard").hidden=!on; if(on){ D=JSON.parse(JSON.stringify(P)); exOpen=false; fillInt(); } }
+$("intBtn").onclick=()=>showInt($("intCard").hidden);
+$("intX").onclick=()=>{ $("intCard").hidden=true; if(!P.set){ P.dismissed=true; saveP(); } };
+$("intSave").onclick=()=>{
+  P={...P,...D,majors:D.majors.slice(0,3),exclude:D.exclude.filter(c=>!D.chips.includes(c)),keywords:strs(D.keywords,10),avoid:strs(D.avoid,5),locations:strs(D.locations,5),set:true,dismissed:true}; saveP(); postInterests(); showHidden=false;
+  try{ if(!localStorage.getItem("elm-sort")) sortMode="rec"; }catch(e){}
+  $("sort").value=sortMode; $("intCard").hidden=true; shown=12; render();
+};
+$("sort").onchange=e=>{ sortMode=e.target.value; try{localStorage.setItem("elm-sort",sortMode)}catch(x){} shown=12; render(); };
+// interview
+function addIv(who,text){ const m=el("div","m "+who,text); $("ivMsgs").append(m); $("ivMsgs").scrollTop=1e9; return m; }
+async function ivCall(){
+  if(ivState.busy) return; ivState.busy=true; $("ivSend").disabled=true;
+  try{
+    const r=await fetch("/api/interview",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({history:ivState.hist.slice(-6),lang,majors:D.majors})});
+    const d=await r.json();
+    if(d.question){ ivState.hist.push({role:"assistant",text:d.question}); addIv("a",d.question); }
+    else if(d.profile){ ivState.prof=d.profile; if(!ivState.prof.exclude_chips||!ivState.prof.exclude_chips.length) ivState.prof.exclude_chips=Rank.suggestExclude(D.majors).filter(c=>!ivState.prof.chips.includes(c)); renderIvProf(); }
+    else addIv("a",d.busy||L().ivBusy);
+  }catch(e){ addIv("a",L().err); }
+  ivState.busy=false; $("ivSend").disabled=false;
+}
+$("intTell").onclick=()=>{ $("iv").hidden=false; if(!ivState.hist.length) ivCall(); $("ivIn").focus(); };
+$("ivForm").onsubmit=e=>{ e.preventDefault(); const v=$("ivIn").value.trim(); if(!v||ivState.busy||ivState.prof) return; $("ivIn").value=""; ivState.hist.push({role:"user",text:v.slice(0,500)}); addIv("u",v); ivCall(); };
+function renderIvProf(){
+  const box=$("ivProf"), pr=ivState.prof; box.textContent=""; box.hidden=!pr; if(!pr) return;
+  const t=L(); box.append(el("p","muted",t.ivT));
+  const row=(label,key,cls,fmt)=>{ const w=el("div","toggles"); w.style.marginBottom="6px"; w.append(el("span","muted",label)); pr[key].forEach(v=>{ const c=el("button","chip x"+(cls?" "+cls:""),fmt?fmt(v):v); c.type="button"; c.onclick=()=>{ pr[key]=pr[key].filter(x=>x!==v); renderIvProf(); }; w.append(c); }); box.append(w); };
+  const kw=el("div","toggles"); kw.style.marginBottom="6px";
+  [["intern",t.kInt],["fulltime",t.kFt],["both",t.kBoth]].forEach(([k,lab])=>{ const b=el("button","tog",lab); b.type="button"; b.setAttribute("aria-pressed",String(pr.kind===k)); b.onclick=()=>{ pr.kind=k; renderIvProf(); }; kw.append(b); });
+  box.append(kw); row(t.rolesL,"chips","",chipLabel); row(t.exL,"exclude_chips","neg",chipLabel); row(t.kwL,"keywords"); row(t.avoidL,"avoid","neg"); row(t.placesL,"locations");
+  const add=el("input"); add.type="text"; add.maxLength=25; add.placeholder=t.ivAdd; add.style.cssText="width:100%;padding:6px 10px;border:1px solid var(--line);border-radius:12px;margin:4px 0 8px";
+  add.onkeydown=e=>{ if(e.key==="Enter"){ e.preventDefault(); const v=add.value.trim(); if(v&&/^[\p{L}\p{N} \-+&/#.']+$/u.test(v)&&pr.keywords.length<10){ pr.keywords.push(v); renderIvProf(); } } };
+  const use=el("button","btn sm",t.ivUse); use.type="button"; const no=el("button","btn ghost sm",t.ivNot); no.type="button"; no.style.marginLeft="8px";
+  use.onclick=()=>{ P={...P,majors:D.majors.slice(0,3),exclude:(pr.exclude_chips||[]).filter(c=>!pr.chips.includes(c)).slice(0,12),exTouched:true,kind:pr.kind==="fulltime"?"entry":pr.kind,chips:pr.chips.slice(0,24),keywords:pr.keywords.slice(0,10),avoid:pr.avoid.slice(0,5),locations:pr.locations.slice(0,5),set:true,dismissed:true}; saveP(); postInterests(); showHidden=false;
+    D=JSON.parse(JSON.stringify(P)); ivState={hist:[],prof:null,busy:false}; $("ivMsgs").textContent=""; $("iv").hidden=true; fillInt(); $("intCard").hidden=true; shown=12; render(); };
+  no.onclick=()=>{ ivState.prof=null; renderIvProf(); };
+  box.append(add,use,no);
+}
+
+function labels(){
+  const t=L(); document.documentElement.lang=lang;
+  $("lead").textContent=t.lead; $("tabApps").textContent=t.tabApps+(Object.keys(TR).length?" ("+Object.keys(TR).length+")":""); $("tabJobs").textContent=t.jobs; $("tabEvents").textContent=t.events;
+  $("fT").textContent=t.fT; $("fN").textContent=rolesTotal==null?"":t.fN(rolesTotal);
+  $("q").placeholder=t.search;
+  { const pl=$("place"); pl.textContent=""; pl.setAttribute("aria-label",t.placeL); pl.append(new Option(t.placeAny,"")); PLACES.forEach(k=>pl.append(new Option(t.places[k],k)));
+    pl.value=PLACES.includes(F.place)?F.place:""; pl.onchange=()=>{ F.place=pl.value; try{localStorage.setItem("elm-filters",JSON.stringify(F))}catch(e){} load(true); }; } $("lang").textContent=lang==="en"?"中文":"English";
+  $("stT").textContent=t.stT; $("stP").textContent=t.stP; $("stA").textContent=t.stA;
+  $("somT").textContent=t.somT; $("somP").textContent=t.somP; $("somA").textContent=t.somA;
+  $("foot").textContent=t.foot+(meta&&meta.built?" "+t.built(String(meta.built).slice(0,10)):"");   /* no link to /stats here (the owner, 2026-11-05): the stats page is reached by its address */
+  $("findT").textContent=t.findT; $("findP").textContent=t.findP; $("webQ").placeholder=t.findPh; $("webGo").textContent=t.findGo; $("webReq").textContent=t.reqBtn;
+  $("appsT").textContent=t.tabApps; $("appsP").textContent=t.appsP; $("csvOut").textContent=t.csvOut; $("csvInB").textContent=t.csvIn; drawQuote(); if(!$("appsView").hidden) renderApps();
+  $("chatOpenT").textContent=t.chat; $("chatOpen").setAttribute("aria-label",t.chat); $("chatT").textContent=t.chatT; $("chatIn").placeholder=t.chatPh; $("chatSend").textContent=t.send; $("chatNote").textContent=t.chatNote;
+  const lg=$("legend"); lg.textContent=""; const sp=el("span","sp sponsored",t.badge(2026,null)); sp.title=t.badgeTip;
+  lg.append(sp, " ", el("b",null,t.legendT), el("p",null,t.legend));
+  { const q=el("p",null,""); [["intern","#F08A3C",t.interns],["entry","#2F7BE5",t.entry],["coop","#8B5CF6",t.coops],["startup","#18A56A",t.startups]].forEach(([k,c,lab])=>{ const b=el("span","stripe",lab); b.style.borderLeftColor=c; q.append(b," "); }); q.append(t.stripeL); lg.append(q); }
+  const fb=el("span","chip found",t.foundBadge); lg.append(el("p",null,"")); lg.lastChild.append(fb, " "+t.foundLegend);
+  const tg=$("toggles"); tg.textContent="";
+  [["kind","intern",t.interns],["kind","entry",t.entry],["kind","coop",t.coops],["sponsor_only",true,t.spons],["startup_only",true,t.startups],["us_only",true,t.us],["mba",true,t.mba]].forEach(([k,v,lab])=>{
+    const b=el("button","tog",lab); b.type="button"; b.setAttribute("aria-pressed", F[k]===v?"true":"false");
+    b.onclick=()=>{ F[k]=(F[k]===v)?(k==="kind"?"":false):v; try{localStorage.setItem("elm-filters",JSON.stringify(F))}catch(e){} labels(); load(true); };
+    tg.append(b);
+  });
+  if(!$("msgs").children.length) addMsg("a", t.chatHi);
+  fillInt();
+}
+
+function roleCard(r){
+  const t=L(), c=el("article","card role"); c.dataset.k=r.coop?"coop":r.tier==="startup"?"startup":(r.kind==="intern"||r.kind==="entry"?r.kind:"");
+  const h=el("h3",null,r.title||""); c.append(h, el("div","co",(r.company||"")+(r.location?" · "+r.location:"")));
+  const m=el("div","meta");
+  m.append(r.coop?el("span","chip coop",t.coopK):el("span","chip "+(r.kind==="intern"?"intern":"entry"), r.kind==="intern"?t.intern:t.entryK));
+  if(r.tier==="startup") m.append(el("span","chip startup",t.startup));
+  if(r.source==="found"){ const f=el("span","chip found",t.foundBadge); f.title=t.foundLegend; m.append(f); }
+  if(r.us===false) m.append(el("span","chip",t.usOnly));
+  (r.flags||[]).forEach(f=>{ if(t.flag[f]) m.append(el("span","chip",t.flag[f])); });
+  const s=r.sponsor;
+  if(s && typeof s==="object" && (s.lca_recent||s.lca_total)){ const b=el("span","sp sponsored",t.badge(s.last_fy, s.lca_recent||s.lca_total)); b.title=t.badgeTip; m.append(b); }
+  if(r.posted) m.append(el("span","muted",t.posted+" "+r.posted));
+  c.append(m);
+  let st=r.sponsor_text, verdict=null, quote=null;
+  if(typeof st==="string"){ verdict=st; quote=r.sponsor_quote||r.sponsor_text_quote||null; }
+  else if(st && typeof st==="object"){ verdict=st.verdict||st.value||st.text||null; quote=st.quote||null; }
+  if((verdict==="likely"||verdict==="no") && typeof quote==="string" && quote){
+    const q=el("p","quote"+(verdict==="no"?" no":"")); q.append(el("b",null,(verdict==="no"?t.no:t.likely)+". "+t.postingSays+" "), document.createTextNode("“"+quote.slice(0,300)+"”")); c.append(q);
+  }
+  if(sortMode==="rec"){ const rk=r._rk||Rank.score(r,effP(),Lr), w=whyLine(rk); if(w) c.append(el("p","why",w)); }
+  const u=safeUrl(r.url), a=el("div","apply"), th=el("div","thumbs");
+  [["up","👍",t.up],["down","👎",t.down]].forEach(([k,ic,tip])=>{ const b=el("button","thumb",ic); b.type="button"; b.dataset.k=k; b.title=tip; b.setAttribute("aria-label",tip);
+    b.setAttribute("aria-pressed",String((k==="up"?1:-1)===votes[r.id])); b.onclick=()=>vote(r,k,c); th.append(b); });
+  const sv=el("button","save",TR[r.id]?t.savedB:t.saveB); sv.type="button"; sv.setAttribute("aria-pressed",String(!!TR[r.id])); sv.onclick=()=>{ trackToggle(r); sv.textContent=TR[r.id]?t.savedB:t.saveB; sv.setAttribute("aria-pressed",String(!!TR[r.id])); };
+  const lf=el("div","row"); lf.style.gap="10px"; lf.append(th,sv); a.append(lf);
+  if(u){ const l=el("a","btn sm",t.apply); l.href=u; l.target="_blank"; l.rel="noopener noreferrer";
+    l.addEventListener("click",()=>{ if(!applied.has(r.id)){ applied.add(r.id); Lr=Rank.learn(Lr,r,"apply",1); saveL(); sendSignal(r.id,"apply"); } }); a.append(l); }
+  c.append(a); return c;
+}
+
+let seq=0, rolesTotal=null;
+async function load(reset){
+  const my=++seq, p=new URLSearchParams({limit:"200"});
+  const q=$("q").value.trim(); if(q) p.set("q",q);
+  if(F.kind) p.set("kind",F.kind);
+  if(PLACES.includes(F.place)) p.set("place",F.place);
+  ["sponsor_only","startup_only","us_only","mba"].forEach(k=>{ if(F[k]) p.set(k,"true"); });
+  try{
+    let got=[], tot=1;
+    for(let off=0; off<tot && off<1000; off+=200){
+      p.set("offset",String(off)); const r=await fetch("/api/roles?"+p); if(!r.ok) throw 0; const d=await r.json(); if(my!==seq) return;
+      tot=d.total; got=got.concat(d.roles); if(!d.roles.length) break;
+    }
+    all=got; shown=12; rolesTotal=tot; render();
+  }catch(e){ if(my===seq){ $("roles").textContent=""; $("roles").append(el("div","card empty",L().err)); $("more").hidden=true; } }
+}
+function eventCard(e){ const c=el("div","card ev"); c.append(el("b",null,String(e.title||""))); const when=String(e.date||e.start||"").replace(/^(\d{4}-\d\d-\d\d)T(\d\d:\d\d).*$/,"$1 $2");
+  const bits=[when,e.where||e.location,e.org].filter(x=>typeof x==="string"&&x&&!/^https?:\/\//i.test(x));   /* a web address is not a place: the ↗ link carries it */ if(bits.length) c.append(el("span","muted",bits.join(" · ")));
+  const u=safeUrl(e.url); if(u){ c.append(document.createElement("br")); const a=el("a",null,"↗"); a.href=u; a.target="_blank"; a.rel="noopener noreferrer"; c.append(a); } return c; }
+async function loadEvents(){
+  const box=$("events"); box.textContent="";
+  try{
+    const d=await (await fetch("/api/events")).json();
+    if(!d.events.length){ box.append(emptyCard(L().noEvents,"peek")); return; }
+    d.events.forEach(e=>box.append(eventCard(e)));
+  }catch(e){ box.append(el("div","card empty",L().err)); }
+}
+function tab(which){
+  $("tabJobs").setAttribute("aria-selected",which==="jobs"); $("tabEvents").setAttribute("aria-selected",which==="events"); $("tabApps").setAttribute("aria-selected",which==="apps");
+  $("jobsView").hidden=which!=="jobs"; $("eventsView").hidden=which!=="events"; $("appsView").hidden=which!=="apps"; if(which==="events") loadEvents(); if(which==="apps") openApps();
+}
+function addMsg(who,text){ const m=el("div","m "+who,text); $("msgs").append(m); $("msgs").scrollTop=1e9; return m; }
+async function send(e){
+  e.preventDefault(); if(busy) return; const text=$("chatIn").value.trim(); if(!text) return;
+  $("chatIn").value=""; addMsg("u",text); const w=addMsg("a",L().thinking); busy=true; $("chatSend").disabled=true;
+  try{
+    const r=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message:text,history:history.slice(-12),lang,prefs:chatPrefs()})});
+    const d=await r.json(); w.textContent=d.reply||L().err;
+    if(d.busy||!r.ok) w.prepend(mikaImg("lie"));
+    if((d.roles&&d.roles.length)||(d.events&&d.events.length)){ const cs=el("div","cards"); (d.roles||[]).forEach(x=>cs.append(roleCard(x))); (d.events||[]).forEach(x=>cs.append(eventCard(x))); w.after(cs); $("msgs").scrollTop=1e9; }
+    if(d.none&&r.ok){ const rb=el("button","btn ghost sm",L().reqBtn); rb.type="button"; rb.style.margin="6px 0";
+      rb.onclick=async()=>{ rb.disabled=true; try{ const q=await fetch("/api/request",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({what:text.slice(0,300),kind:P.kind,chips:P.chips})}); rb.replaceWith(el("p","muted",q.ok?L().reqThanks:L().reqRate)); }catch(e){ rb.disabled=false; } };
+      w.after(rb); $("msgs").scrollTop=1e9; }
+    if(r.ok){ history.push({role:"user",text},{role:"assistant",text:d.reply}); history=history.slice(-12); }
+  }catch(err){ w.textContent=L().err; }
+  busy=false; $("chatSend").disabled=false;
+}
+$("heroMika").onclick=e=>{ const POSES=["sit","wag","happy","tilt","spin","bark","bow"]; const i=e.currentTarget; i.src="/mika/"+POSES[Math.floor(Math.random()*POSES.length)]+".webp"; i.classList.remove("pop"); void i.offsetWidth; i.classList.add("pop"); };
+$("lang").onclick=()=>{ lang=lang==="en"?"zh":"en"; try{localStorage.setItem("elm-lang",lang)}catch(e){} $("msgs").textContent=""; labels(); load(true); if(!$("eventsView").hidden) loadEvents(); };
+$("tabApps").onclick=()=>tab("apps"); $("tabJobs").onclick=()=>tab("jobs"); $("tabEvents").onclick=()=>tab("events");
+let tm; $("q").oninput=()=>{ clearTimeout(tm); tm=setTimeout(()=>load(true),250); };
+$("more").onclick=()=>{ shown+=12; render(); };
+$("chatOpen").onclick=()=>{ $("chat").hidden=false; $("chatOpen").hidden=true; $("chatIn").focus(); };
+$("chatX").onclick=()=>{ $("chat").hidden=true; $("chatOpen").hidden=false; };
+$("chatForm").onsubmit=send;
+document.addEventListener("keydown",e=>{ if(e.key==="Escape" && !$("chat").hidden) $("chatX").click(); });
+// ---- quote of the day (the same for everyone: the server picks it from the New Haven date) ----
+function drawQuote(){
+  const box=$("dq"); if(!Q||!Q.quote){ box.hidden=true; return; }
+  const q=Q.quote, t=L(), txt=(lang==="zh"?(q.zh||q.en):(q.en||q.zh))||""; if(!txt){ box.hidden=true; return; }
+  box.hidden=false; $("dqText").textContent=txt;
+  const o=$("dqOcc"), oc=Q.occasion&&(Q.occasion[lang]||Q.occasion.en); o.hidden=!oc; o.textContent=oc||"";
+  const og=$("dqOrig"); og.hidden=!(q.orig&&q.orig!==txt); og.textContent=q.orig&&q.orig!==txt?String(q.orig):"";
+  $("dqBy").textContent="— "+[q.who,q.where].filter(x=>typeof x==="string"&&x).join(", ");
+  const a=$("dqSrc"), u=safeUrl(q.url); a.hidden=!(u&&u.startsWith("https:")); if(u){ a.href=u; a.textContent="↗ "+t.quoteSrc; }
+}
+fetch("/api/quote").then(r=>r.json()).then(d=>{ Q=d; drawQuote(); }).catch(()=>{});
+// ---- search for more roles and requests ----
+let webBusy=false;
+$("findForm").onsubmit=async e=>{
+  e.preventDefault(); const q=($("webQ").value.trim()||$("q").value.trim()); if(!q||webBusy) return;
+  webBusy=true; $("webGo").disabled=true; $("webMsg").textContent=L().finding; $("webAsk").hidden=true; $("webRes").textContent="";
+  let none=true;
+  try{
+    const r=await fetch("/api/search",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({what:q.slice(0,200),lang})}); const d=await r.json();
+    if(d.roles&&d.roles.length){ none=false; $("webMsg").textContent=L().findNew(d.added||0,d.known||0); d.roles.forEach(x=>$("webRes").append(roleCard(x))); if(d.added) load(true); }
+    else $("webMsg").textContent=d.message||L().findNone;
+  }catch(err){ $("webMsg").textContent=L().findErr; }
+  $("webAsk").hidden=!none; webBusy=false; $("webGo").disabled=false;
+};
+$("webReq").onclick=async()=>{
+  const q=($("webQ").value.trim()||$("q").value.trim()); if(!q) return; $("webReq").disabled=true;
+  try{ const r=await fetch("/api/request",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({what:q.slice(0,300),kind:P.kind,chips:P.chips})});
+    $("webMsg").textContent=r.ok?L().reqThanks:L().reqRate; if(r.ok) $("webAsk").hidden=true; }catch(e){ $("webMsg").textContent=L().findErr; }
+  $("webReq").disabled=false;
+};
+// ---- tracking: Saved -> Applied -> Interview -> Offer / Closed, in this browser only ----
+let TR=(()=>{ const s=jget("elm-track",{}), out={}; Object.values(s).slice(0,500).forEach(e=>{ if(e&&typeof e.id==="string"&&e.id.length<=80&&Csv.STAGES.includes(e.stage)) out[e.id]={id:e.id,company:String(e.company||"").slice(0,160),title:String(e.title||"").slice(0,160),location:String(e.location||"").slice(0,100),url:typeof e.url==="string"?e.url:"",stage:e.stage,note:String(e.note||"").slice(0,300),next:/^\d{4}-\d{2}-\d{2}$/.test(e.next||"")?e.next:"",added:String(e.added||"").slice(0,10),gone:e.gone===true}; }); return out; })();
+const saveTR=()=>jset("elm-track",TR);
+function sendTrack(stage){ try{ fetch("/api/track",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({stage}),keepalive:true}).catch(()=>{}); }catch(e){} }
+function trackToggle(r){
+  const e=TR[r.id];
+  if(e&&(e.stage!=="saved"||e.note)){ tab("apps"); return; }
+  if(e) delete TR[r.id];
+  else if(Object.keys(TR).length<500){ TR[r.id]={id:r.id,company:r.company||"",title:r.title||"",location:r.location||"",url:r.url||"",stage:"saved",note:"",next:"",added:today(),gone:false}; sendTrack("saved"); }
+  saveTR(); labels();
+}
+async function openApps(){
+  renderApps();
+  const ids=Object.keys(TR).slice(0,200); if(!ids.length) return;
+  try{ const d=await (await fetch("/api/roles/exist?ids="+encodeURIComponent(ids.join(",")))).json(); const ok=new Set(d.listed||[]); ids.forEach(i=>{ TR[i].gone=!ok.has(i); }); saveTR(); renderApps(); }catch(e){}
+}
+function renderApps(){
+  const t=L(), box=$("apps"); box.textContent="";
+  const list=Object.values(TR), lg=$("appsLegend"); lg.textContent="";
+  Csv.STAGES.forEach(st=>{ const c=el("span","chip",t.stg[st]); c.append(el("b",null,String(list.filter(e=>e.stage===st).length))); lg.append(c); });
+  if(!list.length){ box.append(emptyCard(t.appsEmpty,"happy")); return; }
+  Csv.STAGES.forEach(st=>list.filter(e=>e.stage===st).forEach(e=>{
+    const c=el("article","card app"); c.append(el("h3",null,e.title), el("div","co muted",e.company+(e.location?" · "+e.location:"")));
+    const m=el("div","meta"); if(e.gone) m.append(el("span","chip gone",t.gone)); const u=safeUrl(e.url);
+    if(u&&u.startsWith("https:")){ const l=el("a","btn sm",t.apply); l.href=u; l.target="_blank"; l.rel="noopener noreferrer"; m.append(l); } c.append(m);
+    const r1=el("div","row"), sel=el("select"); sel.setAttribute("aria-label",t.stg[st]);
+    Csv.STAGES.forEach(x=>{ const o=new Option(t.stg[x],x); sel.append(o); }); sel.value=e.stage;
+    sel.onchange=()=>{ e.stage=sel.value; saveTR(); sendTrack(e.stage); if(e.stage==="applied") toast(t.appliedToast,null,null,"leap"); renderApps(); };
+    const nx=el("input"); nx.type="date"; nx.value=e.next; nx.setAttribute("aria-label",t.nextL); nx.title=t.nextL; nx.onchange=()=>{ e.next=nx.value; saveTR(); };
+    r1.append(sel,el("span","muted",t.nextL),nx); c.append(r1);
+    const r2=el("div","row"), nt=el("textarea"); nt.rows=2; nt.maxLength=300; nt.value=e.note; nt.placeholder=t.noteL; nt.setAttribute("aria-label",t.noteL); nt.onchange=()=>{ e.note=nt.value.slice(0,300); saveTR(); }; r2.append(nt);
+    const rm=el("button","linkbtn",t.rm); rm.type="button"; rm.onclick=()=>{ rm.hidden=true; const q=el("span","muted",t.rmSure+" "), y=el("button","linkbtn",t.yes), n=el("button","linkbtn",t.no); y.type=n.type="button";
+      y.onclick=()=>{ delete TR[e.id]; saveTR(); labels(); renderApps(); }; n.onclick=()=>{ rm.hidden=false; q.remove(); y.remove(); n.remove(); }; r2.append(q,y,n); };
+    r2.append(rm); c.append(r2); box.append(c);
+  }));
+}
+$("csvOut").onclick=()=>{ const b=new Blob([Csv.toCsv(Object.values(TR))],{type:"text/csv"}), a=el("a"); a.href=URL.createObjectURL(b); a.download="mika-job-dashboard-applications.csv"; document.body.append(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),1000); };
+$("csvInB").onclick=()=>$("csvIn").click();
+$("csvIn").onchange=e=>{ const f=e.target.files[0]; if(!f) return; const rd=new FileReader();
+  rd.onload=()=>{ const got=Csv.fromCsv(String(rd.result).slice(0,400000)); if(!got.length){ toast(L().importBad); return; }
+    got.forEach(g=>{ if(TR[g.id]||Object.keys(TR).length<500) TR[g.id]=g; }); saveTR(); labels(); renderApps(); toast(L().imported(got.length)); };
+  rd.onerror=()=>toast(L().importBad); rd.readAsText(f); e.target.value=""; };
+labels(); load(true); if(!P.set&&!P.dismissed) showInt(true);
+fetch("/api/meta").then(r=>r.json()).then(m=>{ meta=m; labels(); }).catch(()=>{});
+</script>
+</body>
+</html>

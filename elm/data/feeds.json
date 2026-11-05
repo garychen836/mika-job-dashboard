@@ -1,0 +1,59 @@
+[
+ {
+  "id": "gwl",
+  "url": "https://yaleconnect.yale.edu/ical/yale/ical_club_36462.ics",
+  "source": "gwl",
+  "track": "campus",
+  "kind": "event",
+  "tags": [
+   "writing",
+   "gwl",
+   "poorvu",
+   "写作中心"
+  ],
+  "host": "Graduate Writing Lab (Poorvu Center)",
+  "page": "https://poorvucenter.yale.edu/writing/graduate-writing-lab",
+  "skip": "\\bundergrad|\\bsenior (thesis|essay)|\\bfirst[- ]years?\\b|\\byale college\\b",
+  "only_host": "writing lab"
+ },
+ {
+  "id": "yale-ventures",
+  "url": "https://api.lu.ma/ics/get?entity=calendar&id=cal-m4D5TFGAAxvRUAy",
+  "source": "yale-ventures",
+  "track": "campus",
+  "kind": "event",
+  "tags": [],
+  "host": "Yale Ventures",
+  "page": "https://ventures.yale.edu/events"
+ },
+ {
+  "id": "jackson",
+  "url": "https://events.jackson.yale.edu/calendar/1.ics",
+  "source": "jackson",
+  "track": "campus",
+  "kind": "event",
+  "tags": [],
+  "host": "Jackson School of Global Affairs",
+  "page": "https://events.jackson.yale.edu"
+ },
+ {
+  "id": "tsai-city",
+  "url": "https://api.lu.ma/ics/get?entity=calendar&id=cal-3dFlCEjNnwqDQ8a",
+  "source": "tsai-city",
+  "track": "campus",
+  "kind": "event",
+  "tags": [],
+  "host": "Tsai CITY",
+  "page": "https://city.yale.edu/events"
+ },
+ {
+  "id": "oiss",
+  "url": "https://yaleconnect.yale.edu/ical/yale/ical_club_32393.ics",
+  "source": "oiss",
+  "track": "campus",
+  "kind": "event",
+  "tags": [],
+  "host": "Office of International Students and Scholars",
+  "page": "https://oiss.yale.edu/calendar"
+ }
+]

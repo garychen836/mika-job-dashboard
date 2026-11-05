@@ -1,0 +1,289 @@
+[
+ {
+  "tag": "new-year",
+  "en": "New Year's Day",
+  "zh": "元旦",
+  "dates": {
+   "2026": [
+    "2026-01-01"
+   ],
+   "2027": [
+    "2027-01-01"
+   ],
+   "2028": [
+    "2028-01-01",
+    "2027-12-31"
+   ]
+  },
+  "window_days_before": 3,
+  "url": "https://www.opm.gov/policy-data-oversight/pay-leave/federal-holidays/"
+ },
+ {
+  "tag": "mlk-day",
+  "en": "Martin Luther King Jr. Day",
+  "zh": "马丁·路德·金纪念日",
+  "dates": {
+   "2026": [
+    "2026-01-19"
+   ],
+   "2027": [
+    "2027-01-18"
+   ],
+   "2028": [
+    "2028-01-17"
+   ]
+  },
+  "window_days_before": 3,
+  "url": "https://www.opm.gov/policy-data-oversight/pay-leave/federal-holidays/"
+ },
+ {
+  "tag": "juneteenth",
+  "en": "Juneteenth",
+  "zh": "六月节（Juneteenth）",
+  "dates": {
+   "2026": [
+    "2026-06-19"
+   ],
+   "2027": [
+    "2027-06-18",
+    "2027-06-19"
+   ],
+   "2028": [
+    "2028-06-19"
+   ]
+  },
+  "window_days_before": 2,
+  "url": "https://www.opm.gov/policy-data-oversight/pay-leave/federal-holidays/"
+ },
+ {
+  "tag": "independence-day",
+  "en": "Independence Day (US)",
+  "zh": "美国独立日",
+  "dates": {
+   "2026": [
+    "2026-07-03",
+    "2026-07-04"
+   ],
+   "2027": [
+    "2027-07-04",
+    "2027-07-05"
+   ],
+   "2028": [
+    "2028-07-04"
+   ]
+  },
+  "window_days_before": 3,
+  "url": "https://www.opm.gov/policy-data-oversight/pay-leave/federal-holidays/ (observed dates; 4 July is the holiday date)"
+ },
+ {
+  "tag": "thanksgiving",
+  "en": "Thanksgiving (US)",
+  "zh": "感恩节",
+  "dates": {
+   "2026": [
+    "2026-11-26"
+   ],
+   "2027": [
+    "2027-11-25"
+   ],
+   "2028": [
+    "2028-11-23"
+   ]
+  },
+  "window_days_before": 4,
+  "url": "https://www.opm.gov/policy-data-oversight/pay-leave/federal-holidays/"
+ },
+ {
+  "tag": "winter-holidays",
+  "en": "Winter holidays (Christmas Day)",
+  "zh": "冬季假期（圣诞节）",
+  "dates": {
+   "2026": [
+    "2026-12-25"
+   ],
+   "2027": [
+    "2027-12-24",
+    "2027-12-25"
+   ],
+   "2028": [
+    "2028-12-25"
+   ]
+  },
+  "window_days_before": 7,
+  "url": "https://www.opm.gov/policy-data-oversight/pay-leave/federal-holidays/"
+ },
+ {
+  "tag": "lunar-new-year",
+  "en": "Lunar New Year",
+  "zh": "农历新年",
+  "dates": {
+   "2026": [
+    "2026-02-17"
+   ],
+   "2027": [
+    "2027-02-06"
+   ],
+   "2028": [
+    "2028-01-26"
+   ]
+  },
+  "window_days_before": 5,
+  "url": "https://en.wikipedia.org/wiki/Chinese_New_Year"
+ },
+ {
+  "tag": "diwali",
+  "en": "Diwali",
+  "zh": "排灯节（Diwali）",
+  "dates": {
+   "2026": [
+    "2026-11-08"
+   ],
+   "2027": [
+    "2027-10-29"
+   ],
+   "2028": [
+    "2028-10-17"
+   ]
+  },
+  "window_days_before": 3,
+  "url": "https://en.wikipedia.org/wiki/Diwali"
+ },
+ {
+  "tag": "ramadan-eid",
+  "en": "Ramadan and Eid al-Fitr",
+  "zh": "斋月与开斋节",
+  "dates": {
+   "2026": [
+    "2026-03-20"
+   ],
+   "2027": [
+    "2027-03-09"
+   ],
+   "2028": [
+    "2028-02-26"
+   ]
+  },
+  "window_days_before": 3,
+  "url": "https://en.wikipedia.org/wiki/Ramadan ; https://en.wikipedia.org/wiki/Eid_al-Fitr (Ramadan start/end per Umm al-Qura calendar, real dates can differ by a day with moon sighting; Eid 2028 derived as the day after Ramadan ends on 25 Feb)",
+  "ranges": {
+   "2026": [
+    [
+     "2026-02-18",
+     "2026-03-19"
+    ]
+   ],
+   "2027": [
+    [
+     "2027-02-08",
+     "2027-03-08"
+    ]
+   ],
+   "2028": [
+    [
+     "2028-01-28",
+     "2028-02-25"
+    ]
+   ]
+  }
+ },
+ {
+  "tag": "earth-day",
+  "en": "Earth Day",
+  "zh": "地球日",
+  "dates": {
+   "2026": [
+    "2026-04-22"
+   ],
+   "2027": [
+    "2027-04-22"
+   ],
+   "2028": [
+    "2028-04-22"
+   ]
+  },
+  "window_days_before": 3,
+  "url": "https://en.wikipedia.org/wiki/Earth_Day"
+ },
+ {
+  "tag": "international-womens-day",
+  "en": "International Women's Day",
+  "zh": "国际妇女节",
+  "dates": {
+   "2026": [
+    "2026-03-08"
+   ],
+   "2027": [
+    "2027-03-08"
+   ],
+   "2028": [
+    "2028-03-08"
+   ]
+  },
+  "window_days_before": 3,
+  "url": "https://en.wikipedia.org/wiki/International_Women%27s_Day"
+ },
+ {
+  "tag": "black-history-month",
+  "en": "Black History Month (US, February)",
+  "zh": "黑人历史月（美国，二月）",
+  "dates": {
+   "2026": [],
+   "2027": [],
+   "2028": []
+  },
+  "window_days_before": 0,
+  "url": "https://en.wikipedia.org/wiki/Black_History_Month",
+  "ranges": {
+   "2026": [
+    [
+     "2026-02-01",
+     "2026-02-28"
+    ]
+   ],
+   "2027": [
+    [
+     "2027-02-01",
+     "2027-02-28"
+    ]
+   ],
+   "2028": [
+    [
+     "2028-02-01",
+     "2028-02-29"
+    ]
+   ]
+  }
+ },
+ {
+  "tag": "womens-history-month",
+  "en": "Women's History Month (US, March)",
+  "zh": "妇女历史月（美国，三月）",
+  "dates": {
+   "2026": [],
+   "2027": [],
+   "2028": []
+  },
+  "window_days_before": 0,
+  "url": "https://en.wikipedia.org/wiki/Women%27s_History_Month",
+  "ranges": {
+   "2026": [
+    [
+     "2026-03-01",
+     "2026-03-31"
+    ]
+   ],
+   "2027": [
+    [
+     "2027-03-01",
+     "2027-03-31"
+    ]
+   ],
+   "2028": [
+    [
+     "2028-03-01",
+     "2028-03-31"
+    ]
+   ]
+  }
+ }
+]

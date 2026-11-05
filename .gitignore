@@ -1,0 +1,12 @@
+.env
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+# built every day by the crawl, never committed
+elm/data/roles.json
+elm/data/events.json
+elm/data/_*.json
+elm/data/*_site.json
+elm/data/feeds_cache/
+elm/data/*.tmp
