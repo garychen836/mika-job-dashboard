@@ -11,7 +11,7 @@ from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field, ValidationError
 
-import durable, roledata as store, chat, interview, limits, elmstats, search, elmquotes as quotes   # noqa: E402  (elmquotes: backend/quotes.py is Mika's)
+import durable, snapshot, roledata as store, chat, interview, limits, elmstats, search, elmquotes as quotes   # noqa: E402  (elmquotes: backend/quotes.py is Mika's)
 
 MAX_BODY = 20_000
 STATIC = Path(__file__).parent / "static"
@@ -63,6 +63,7 @@ def client_ip(request: Request) -> str:
 @app.on_event("startup")
 def _restore():
     durable.restore()                       # a free host starts with an empty disk: bring back pool, usage, requests, counters
+    threading.Thread(target=snapshot.load, daemon=True).start()   # and the day's roles from the published snapshot (elm/snapshot.py)
 
 
 if MIKA_IMAGES.is_dir():
@@ -92,6 +93,7 @@ def healthz():
 def api_roles(q: str = Query("", max_length=100), kind: str = Query("", max_length=10), sponsor_only: bool = False,
               startup_only: bool = False, us_only: bool = False, mba: bool = False, place: str = Query("", max_length=12),
               limit: int = Query(50, ge=1, le=200), offset: int = Query(0, ge=0, le=100000)):
+    snapshot.ensure_soon()
     return store.search_roles(q, kind, sponsor_only, startup_only, us_only, mba, limit, offset,
                               place if place in store.PLACES else "")
 
@@ -120,6 +122,7 @@ def api_events(q: str = Query("", max_length=100), limit: int = Query(30, ge=1, 
 
 @app.get("/api/meta")
 def api_meta():
+    snapshot.ensure_soon()                  # roles.json gone (instance slept): fetch the snapshot in the background
     r, e = store.all_roles(), store.load("events.json", "events")
     src = r.get("sources")
     return {"roles": len(r["roles"]), "events": len(e["events"]), "built": r["built"],

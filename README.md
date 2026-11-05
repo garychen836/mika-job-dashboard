@@ -68,8 +68,10 @@ Environment variables:
 | `ELM_UPLOAD_SECRET` | Long random string that lets the daily crawl upload; the same value goes in the GitHub secret |
 | `ELM_DATABASE_URL` | Postgres for the shared pool, usage and stats (optional) |
 
-The daily crawl runs in GitHub Actions and posts to `/api/admin/upload`. To turn it on, add the repository secrets
-`ELM_URL` and `ELM_UPLOAD_SECRET`.
+The daily crawl runs in GitHub Actions. It publishes the day's data as `elm-data.json.gz` on this repository's
+`data-latest` release, and the server loads that file whenever its disk is empty: a free instance loses its disk when it
+sleeps (`elm/snapshot.py`). It also posts the data to `/api/admin/upload` so the site updates at once. That part needs the
+repository secrets `ELM_URL` and `ELM_UPLOAD_SECRET`.
 
 ## Sources and licenses
 

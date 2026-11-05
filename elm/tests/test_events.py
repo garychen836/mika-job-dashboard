@@ -1,5 +1,6 @@
 """Offline tests: event keyword filter and tags, no SOM / robots-disallowed hosts, the upload route. Run: python elm/tests/test_events.py"""
 import json, os, sys, tempfile
+os.environ["ELM_SNAPSHOT_URL"] = "off"   # offline: never fetch the published data snapshot
 from pathlib import Path
 
 HERE = Path(__file__).parent

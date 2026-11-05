@@ -2,6 +2,7 @@
 Why: 2026-11-05, the first live upload of 2,700 roles got 413 from the app-wide size guard, so the live page stayed empty;
 the tests never sent an upload bigger than the guard. Prints "elm upload size: ALL OK"."""
 import json, os, shutil, sys, tempfile
+os.environ["ELM_SNAPSHOT_URL"] = "off"   # offline: never fetch the published data snapshot
 from pathlib import Path
 
 HERE = Path(__file__).parent

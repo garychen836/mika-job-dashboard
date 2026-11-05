@@ -1,13 +1,16 @@
-# Mika Job Dashboard: the daily crawl runs here, not in the web server, then uploads the result.
-# Reads every board in the committed elm/data/seeds.json (elm/crawl.py) and Yale's public career events (elm/events.py), and
-# POSTs roles + events + the crawl summary to $ELM_URL/api/admin/upload (elm/upload.py). Zero model tokens.
-# Secrets (repository settings): ELM_URL (https://<service>.onrender.com) and ELM_UPLOAD_SECRET (the same value as the service's
-# env ELM_UPLOAD_SECRET). Without them the crawl still runs and the upload is skipped.
+# Mika Job Dashboard: the daily crawl runs here, not in the web server. Zero model tokens.
+# 1. Reads every board in elm/data/seeds.json (elm/crawl.py) and Yale's public career events (elm/events.py).
+# 2. Publishes the result as elm-data.json.gz on the release "data-latest" of this repository. The server loads it whenever
+#    its disk is empty (a free instance loses its disk when it sleeps): elm/snapshot.py.
+# 3. POSTs the same data to $ELM_URL/api/admin/upload, so the live site has it at once (secrets ELM_URL, ELM_UPLOAD_SECRET;
+#    without them this step is skipped and the site picks the data up from the release instead).
 name: Elm crawl
 on:
   schedule:
     - cron: "0 10 * * *"
   workflow_dispatch:
+permissions:
+  contents: write          # only to publish the data-latest release asset
 jobs:
   crawl:
     runs-on: ubuntu-latest
@@ -15,6 +18,7 @@ jobs:
     env:
       ELM_URL: ${{ secrets.ELM_URL }}
       ELM_UPLOAD_SECRET: ${{ secrets.ELM_UPLOAD_SECRET }}
+      GH_TOKEN: ${{ github.token }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -24,22 +28,37 @@ jobs:
       - name: Wake the service (a free instance sleeps)
         if: env.ELM_URL != ''
         run: curl -fsS --max-time 120 "$ELM_URL/healthz" || true
-      # The board list (elm/data/seeds.json) is committed and rebuilt by hand (elm/seeds.py), not every day.
+      # The board list (elm/data/seeds.json) is committed and edited by hand.
       - run: python elm/crawl.py
       - run: python elm/events.py
-      - name: Upload
-        if: env.ELM_URL != '' && env.ELM_UPLOAD_SECRET != ''
+      - name: Build the data file
         run: |
           python - <<'PY'
-          import json, pathlib
+          import gzip, json, pathlib, sys
+          sys.path[:0] = ["elm", "backend"]
+          import upload
           d = pathlib.Path("elm/data")
           body = {"roles": json.loads((d / "roles.json").read_text()), "crawl": json.loads((d / "_crawl.json").read_text())}
           if (d / "events.json").exists():
               body["events"] = json.loads((d / "events.json").read_text())
-          pathlib.Path("/tmp/elm_upload.json").write_text(json.dumps(body))
+          clean, why = upload.validate(body)          # the same checks the server makes
+          if clean is None:
+              sys.exit("not published: " + why)
+          raw = json.dumps(body).encode()
+          pathlib.Path("/tmp/elm_upload.json").write_bytes(raw)
+          pathlib.Path("/tmp/elm-data.json.gz").write_bytes(gzip.compress(raw))
+          print(len(body["roles"]), "roles,", clean.get("_dropped", 0), "would be dropped")
           PY
+      - name: Publish the data snapshot (release data-latest)
+        run: |
+          gh release view data-latest >/dev/null 2>&1 || gh release create data-latest --title "Daily data (latest)" \
+            --notes "Roles and events from the daily crawl. The live site loads this file when its disk is empty. Replaced every day."
+          gh release upload data-latest /tmp/elm-data.json.gz --clobber
+      - name: Upload to the live site
+        if: env.ELM_URL != '' && env.ELM_UPLOAD_SECRET != ''
+        run: |
           curl -fsS --max-time 300 -X POST "$ELM_URL/api/admin/upload" -H "Content-Type: application/json" \
             -H "X-Elm-Upload: $ELM_UPLOAD_SECRET" --data-binary @/tmp/elm_upload.json
       - name: Skipped upload
         if: env.ELM_URL == '' || env.ELM_UPLOAD_SECRET == ''
-        run: echo "ELM_URL or ELM_UPLOAD_SECRET is not set - crawl done, upload skipped."
+        run: echo "ELM_URL or ELM_UPLOAD_SECRET is not set - the site loads the published snapshot instead."

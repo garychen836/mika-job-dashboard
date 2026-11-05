@@ -1,5 +1,6 @@
 """Offline tests of the Mika Job Dashboard app: no model, no network. Run: python elm/tests/test_app.py"""
 import os, shutil, sys, tempfile, json
+os.environ["ELM_SNAPSHOT_URL"] = "off"   # offline: never fetch the published data snapshot
 from pathlib import Path
 
 HERE = Path(__file__).parent

@@ -3,6 +3,7 @@ Agent construction, structured output, output types, message history and usage r
 Why: 2026-11-05, every real answer turned into "busy" because `res.usage()` became a property in this pydantic-ai
 version; the other tests replaced `_run` whole and never saw it. Prints "elm agent path: ALL OK"."""
 import asyncio, json, os, shutil, sys, tempfile
+os.environ["ELM_SNAPSHOT_URL"] = "off"   # offline: never fetch the published data snapshot
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent

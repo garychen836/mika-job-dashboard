@@ -8,7 +8,7 @@ fail=0
 run() { local name="$1"; shift; if "$@" >/tmp/mjd_check.log 2>&1; then echo "PASS  $name"; else echo "FAIL  $name"; tail -15 /tmp/mjd_check.log; fail=1; fi; }
 run "python compiles" "$PY" -m py_compile backend/*.py elm/*.py
 run "no undefined names (copied code)" "$PY" scripts/tools/undefined_names.py backend/*.py elm/*.py
-for t in test_entry test_no_cdo test_app test_agent_path test_events test_module_names test_upload_size; do run "test $t" "$PY" "elm/tests/$t.py"; done
+for t in test_entry test_no_cdo test_app test_agent_path test_events test_module_names test_upload_size test_snapshot; do run "test $t" "$PY" "elm/tests/$t.py"; done
 page_js() { "$PY" - <<'PYX'
 import re, pathlib, subprocess, sys
 for f in ("elm/static/index.html", "elm/static/stats.html"):
@@ -26,7 +26,7 @@ run "no secrets in tracked files" secrets
 red_team() {
   local port="${RT_PORT:-8279}" d rc=0; d="$(mktemp -d)"
   "$PY" scripts/tools/elm_redteam_data.py "$d" >/dev/null || { rm -rf "$d"; return 1; }
-  env -u OPENROUTER_API_KEY -u ELM_CHAT_MODEL -u ELM_DATABASE_URL -u ELM_UPLOAD_SECRET ELM_DATA_DIR="$d" \
+  env -u OPENROUTER_API_KEY -u ELM_CHAT_MODEL -u ELM_DATABASE_URL -u ELM_UPLOAD_SECRET ELM_SNAPSHOT_URL=off ELM_DATA_DIR="$d" \
       "$PY" -m uvicorn --app-dir elm app:app --port "$port" >"$d/server.log" 2>&1 &
   local pid=$!
   for _ in $(seq 1 60); do curl -fsS "http://127.0.0.1:$port/healthz" >/dev/null 2>&1 && break; sleep 1; done
